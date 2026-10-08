@@ -3,7 +3,9 @@ import Base from '../layouts/Base.astro';
 import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
 import ManorIllustration from '../components/ManorIllustration.astro';
+import { Image } from 'astro:assets';
 import { studio, categories, extraNote } from '../data/site';
+import gutshaus from '../assets/gutshaus.webp';
 ---
 
 <Base>
@@ -76,6 +78,34 @@ import { studio, categories, extraNote } from '../data/site';
           ))}
         </div>
         <p class="extra reveal">{extraNote}</p>
+      </div>
+    </section>
+
+    <!-- Das Gutshaus -->
+    <section id="gutshaus" class="section house">
+      <div class="container house-grid">
+        <figure class="house-photo reveal-clip">
+          <Image
+            src={gutshaus}
+            alt="Das Gutshaus in der Hofstraße in Altenhaßlau: rotes Sandsteinhaus mit petrolfarbenen Fensterläden"
+            widths={[480, 640]}
+            sizes="(min-width: 900px) 560px, 100vw"
+            loading="lazy"
+          />
+        </figure>
+        <div class="house-text reveal" style="--delay: 120ms">
+          <p class="eyebrow">Das Gutshaus</p>
+          <h2>Ein besonderer Ort für Ihre Auszeit.</h2>
+          <p>
+            Mein Studio liegt im Gutshaus in der {studio.street} – einem Haus aus rotem
+            Sandstein mit grünen Fensterläden, umgeben von Bäumen. Hier finden Sie Ruhe
+            abseits vom Alltag.
+          </p>
+          <p>
+            Schon beim Ankommen beginnt die Entspannung: kein Trubel, keine Hektik –
+            nur Zeit für Sie.
+          </p>
+        </div>
       </div>
     </section>
 
@@ -470,6 +500,54 @@ import { studio, categories, extraNote } from '../data/site';
     .reveal-scale {
       transform: none;
       transition-property: opacity;
+    }
+  }
+  /* Das Gutshaus */
+  .house-grid {
+    display: grid;
+    gap: 40px;
+    align-items: center;
+  }
+
+  @media (min-width: 900px) {
+    .house-grid {
+      grid-template-columns: 1.15fr 1fr;
+      gap: 72px;
+    }
+  }
+
+  .house-photo {
+    margin: 0;
+    border-radius: var(--radius);
+    overflow: hidden;
+    aspect-ratio: 4 / 3;
+  }
+
+  .house-photo :global(img) {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transform: scale(1.06);
+    transition: transform 1200ms var(--ease-out);
+    transition-delay: 100ms;
+  }
+
+  /* Das Foto setzt sich beim Aufdecken sanft zurecht */
+  .house-photo.is-visible :global(img),
+  :global(.no-js) .house-photo :global(img) {
+    transform: none;
+  }
+
+  .house-text p:not(.eyebrow) {
+    color: var(--muted);
+    margin-top: 16px;
+    max-width: 34em;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .house-photo :global(img) {
+      transform: none;
+      transition: none;
     }
   }
 </style>
