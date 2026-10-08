@@ -122,29 +122,29 @@ const scenes = [
       const p = clamp((stickTop - tour.getBoundingClientRect().top) / total);
 
       // 1) Karte wächst zum Vollbild
-      const grow = ease(seg(p, 0, 0.22));
+      const grow = ease(seg(p, 0, 0.14));
       frame.style.clipPath = `inset(${gy * (1 - grow)}px ${gx * (1 - grow)}px ${gy * (1 - grow)}px ${gx * (1 - grow)}px round ${20 * (1 - grow)}px)`;
 
       // 2) Zoom auf den Eingang, dann Überblenden nach innen (Unschärfe kaschiert den Übergang)
-      const zoom = ease(seg(p, 0.18, 0.5));
-      const out0 = seg(p, 0.42, 0.52);
+      const zoom = ease(seg(p, 0.1, 0.34));
+      const out0 = seg(p, 0.28, 0.38);
       imgs[0].style.transform = `scale(${1 + 0.1 * grow + 0.5 * zoom})`;
       layers[0].style.opacity = String(1 - out0);
       imgs[0].style.filter = out0 > 0 && out0 < 1 ? `blur(${out0 * 2}px)` : '';
 
       // 3) Behandlungsraum: kommt leicht vergrößert herein und setzt sich
-      imgs[1].style.transform = `scale(${1.15 - 0.15 * ease(seg(p, 0.42, 0.7))})`;
+      imgs[1].style.transform = `scale(${1.15 - 0.15 * ease(seg(p, 0.28, 0.58))})`;
 
       // 4) Sitzecke blendet über den Behandlungsraum
-      const in2 = seg(p, 0.72, 0.82);
+      const in2 = seg(p, 0.66, 0.76);
       layers[2].style.opacity = String(in2);
-      imgs[2].style.transform = `scale(${1.1 - 0.1 * ease(seg(p, 0.72, 0.98))})`;
+      imgs[2].style.transform = `scale(${1.1 - 0.1 * ease(seg(p, 0.66, 0.98))})`;
 
-      showCaption(captions[0], 1, fadeIn(p, 0.1, 0.2));
-      showCaption(captions[1], fadeIn(p, 0.52, 0.6), fadeIn(p, 0.68, 0.74));
-      showCaption(captions[2], fadeIn(p, 0.82, 0.9));
+      showCaption(captions[0], 1, fadeIn(p, 0.06, 0.14));
+      showCaption(captions[1], fadeIn(p, 0.38, 0.46), fadeIn(p, 0.6, 0.66));
+      showCaption(captions[2], fadeIn(p, 0.76, 0.84));
 
-      const active = p < 0.47 ? 0 : p < 0.77 ? 1 : 2;
+      const active = p < 0.33 ? 0 : p < 0.71 ? 1 : 2;
       steps.forEach((s, i) => s.toggleAttribute('data-active', i === active));
     };
 
@@ -261,7 +261,7 @@ const scenes = [
 
   /* Live-Modus: Bühne bleibt stehen, während man scrollt */
   .tour.is-live {
-    height: 420vh;
+    height: 300vh;
     padding: 0;
   }
 
