@@ -1,6 +1,6 @@
 # 003 — Make switching treatment tabs feel snappy
 
-- **Status**: TODO
+- **Status**: DONE
 - **Commit**: 6a9d0d6
 - **Severity**: MEDIUM
 - **Category**: Easing & duration

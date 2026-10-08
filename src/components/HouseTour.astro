@@ -92,6 +92,16 @@ const scenes = [
     const captions = [...tour.querySelectorAll<HTMLElement>('[data-caption]')];
     const steps = [...tour.querySelectorAll<HTMLElement>('[data-step]')];
 
+    // Geometrie ändert sich nur bei Größenänderung – nicht pro Scroll-Bild neu messen
+    let stickTop = 0, total = 1, gx = 16, gy = 0;
+    const measure = () => {
+      stickTop = parseFloat(getComputedStyle(sticky).top);
+      total = tour.offsetHeight - sticky.offsetHeight;
+      const vw = window.innerWidth;
+      gx = vw >= 1216 ? (vw - 1120) / 2 : Math.min(48, Math.max(16, vw * 0.05));
+      gy = frame.offsetHeight * 0.07;
+    };
+
     const clamp = (v: number) => Math.min(1, Math.max(0, v));
     const seg = (p: number, a: number, b: number) => clamp((p - a) / (b - a));
     // Starkes Ease-in-out, passend zu --ease-in-out
@@ -110,23 +120,18 @@ const scenes = [
     const render = () => {
       frameReq = 0;
       // Fortschritt der Phase, in der die Bühne unter der Kopfzeile klebt (0 bis 1)
-      const rect = tour.getBoundingClientRect();
-      const total = tour.offsetHeight - sticky.offsetHeight;
-      const p = clamp((parseFloat(getComputedStyle(sticky).top) - rect.top) / total);
-      const vw = window.innerWidth;
+      const p = clamp((stickTop - tour.getBoundingClientRect().top) / total);
 
       // 1) Karte wächst zum Vollbild
       const grow = ease(seg(p, 0, 0.22));
-      const gx = vw >= 1216 ? (vw - 1120) / 2 : Math.min(48, Math.max(16, vw * 0.05));
-      const gy = frame.offsetHeight * 0.07;
       frame.style.clipPath = `inset(${gy * (1 - grow)}px ${gx * (1 - grow)}px ${gy * (1 - grow)}px ${gx * (1 - grow)}px round ${20 * (1 - grow)}px)`;
 
       // 2) Zoom auf den Eingang, dann Überblenden nach innen (Unschärfe kaschiert den Übergang)
       const zoom = ease(seg(p, 0.18, 0.5));
       const out0 = seg(p, 0.42, 0.52);
-      imgs[0].style.transform = `scale(${1 + 0.1 * grow + 1.5 * zoom})`;
+      imgs[0].style.transform = `scale(${1 + 0.1 * grow + 0.5 * zoom})`;
       layers[0].style.opacity = String(1 - out0);
-      imgs[0].style.filter = out0 > 0 ? `blur(${out0 * 6}px)` : '';
+      imgs[0].style.filter = out0 > 0 && out0 < 1 ? `blur(${out0 * 2}px)` : '';
 
       // 3) Behandlungsraum: kommt leicht vergrößert herein und setzt sich
       imgs[1].style.transform = `scale(${1.15 - 0.15 * ease(seg(p, 0.42, 0.7))})`;
@@ -148,7 +153,11 @@ const scenes = [
       if (!frameReq) frameReq = requestAnimationFrame(render);
     };
     window.addEventListener('scroll', schedule, { passive: true });
-    window.addEventListener('resize', schedule);
+    window.addEventListener('resize', () => {
+      measure();
+      schedule();
+    });
+    measure();
     render();
   }
 </script>

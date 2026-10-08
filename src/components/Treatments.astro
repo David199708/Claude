@@ -287,8 +287,8 @@ const pad = (n: number) => String(n + 1).padStart(2, '0');
   .icon path {
     stroke-dasharray: 1;
     stroke-dashoffset: 0;
-    transition: stroke-dashoffset 900ms var(--ease-in-out);
-    transition-delay: calc(var(--i, 0) * 80ms);
+    transition: stroke-dashoffset 600ms var(--ease-in-out);
+    transition-delay: calc(var(--i, 0) * 60ms);
   }
 
   .is-ready .panel:not([hidden]) .icon path {
@@ -344,9 +344,9 @@ const pad = (n: number) => String(n + 1).padStart(2, '0');
     border-bottom: 1px solid var(--line);
     break-inside: avoid;
     transition:
-      opacity 300ms var(--ease-out),
-      transform 300ms var(--ease-out);
-    transition-delay: calc(80ms + var(--n) * 40ms);
+      opacity 200ms var(--ease-out),
+      transform 200ms var(--ease-out);
+    transition-delay: calc(var(--n) * 30ms);
   }
 
   /* Zeilen erscheinen nacheinander, wenn ein Bereich geöffnet wird */
@@ -357,8 +357,23 @@ const pad = (n: number) => String(n + 1).padStart(2, '0');
     }
   }
 
+  /* Überschrift des Bereichs kommt mit derselben Bewegung wie die Zeilen */
+  .panel-intro > :not(.icon) {
+    transition:
+      opacity 200ms var(--ease-out),
+      transform 200ms var(--ease-out);
+  }
+
+  .is-ready .panel:not([hidden]) .panel-intro > :not(.icon) {
+    @starting-style {
+      opacity: 0;
+      transform: translateY(4px);
+    }
+  }
+
   [data-instant] .list li,
-  [data-instant] .icon path {
+  [data-instant] .icon path,
+  [data-instant] .panel-intro > * {
     transition: none;
   }
 
@@ -406,7 +421,8 @@ const pad = (n: number) => String(n + 1).padStart(2, '0');
     .icon path {
       transition: none;
     }
-    .is-ready .panel:not([hidden]) .list li {
+    .is-ready .panel:not([hidden]) .list li,
+    .is-ready .panel:not([hidden]) .panel-intro > :not(.icon) {
       @starting-style {
         transform: none;
       }

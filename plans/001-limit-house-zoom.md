@@ -1,6 +1,6 @@
 # 001 — Limit the house zoom so the photo never pixelates
 
-- **Status**: TODO
+- **Status**: DONE
 - **Commit**: 6a9d0d6
 - **Severity**: MEDIUM
 - **Category**: Physicality & origin

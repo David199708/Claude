@@ -1,6 +1,6 @@
 # 002 — Make each scroll frame of the house tour cheap
 
-- **Status**: TODO
+- **Status**: DONE
 - **Commit**: 6a9d0d6
 - **Severity**: MEDIUM
 - **Category**: Performance
