@@ -1,0 +1,527 @@
+---
+// Gestaltungsvorschlag nach Apples Design-Prinzipien: Systemschrift, Milchglas-Navigation,
+// mitwachsendes Hausfoto, wischbares Raum-Karussell (native Scroll-Physik), Behandlungs-Kacheln.
+import { Image } from 'astro:assets';
+import { studio, categories, extraNote } from '../data/site';
+import gutshaus from '../assets/gutshaus.webp';
+import innen1 from '../assets/innen-1.png';
+import innen2 from '../assets/innen-2.png';
+
+const rooms = [
+  { img: gutshaus, eyebrow: 'Das Gutshaus', title: 'Roter Sandstein. Grüne Läden.', alt: 'Das Gutshaus in der Hofstraße in Altenhaßlau' },
+  { img: innen1, eyebrow: 'Der Behandlungsraum', title: 'Hell, warm und ruhig.', alt: 'Der Behandlungsraum mit Behandlungsliege' },
+  { img: innen2, eyebrow: 'Die Sitzecke', title: 'Erst reden, dann genießen.', alt: 'Die Sitzecke mit Holztisch, Kerze und zwei Stühlen' },
+];
+---
+
+<!doctype html>
+<html lang="de">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta name="theme-color" content="#ffffff" />
+    <title>{studio.name} – {studio.slogan}</title>
+    <meta name="description" content={`${studio.name} in ${studio.city}: ${studio.slogan}. Termine unter ${studio.phone}.`} />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <noscript><style>.reveal { opacity: 1 !important; transform: none !important; }</style></noscript>
+  </head>
+  <body>
+    <header class="nav">
+      <div class="wrap nav-inner">
+        <a href="#top" aria-label={`${studio.name} – nach oben`}><img src="/logo.png" alt={studio.name} class="logo" /></a>
+        <nav aria-label="Hauptnavigation">
+          <a href="#raeume">Räume</a>
+          <a href="#behandlungen">Behandlungen</a>
+          <a href="#kontakt">Kontakt</a>
+        </nav>
+        <a class="pill small" href={studio.phoneHref}>Anrufen</a>
+      </div>
+    </header>
+
+    <main id="top">
+      <!-- Start -->
+      <section class="hero">
+        <div class="wrap hero-text">
+          <p class="eyebrow in">Kosmetik im Gutshaus</p>
+          <h1 class="display in" style="--i: 1">Wohlfühlstunden.</h1>
+          <p class="lead in" style="--i: 2">Für Körper und Sinne. In einem Gutshaus in Altenhaßlau.</p>
+          <div class="actions in" style="--i: 3">
+            <a class="pill" href={studio.phoneHref}>Termin vereinbaren</a>
+            <a class="link" href="#behandlungen">Behandlungen ansehen <span aria-hidden="true">›</span></a>
+          </div>
+        </div>
+        <div class="hero-media" data-hero-media>
+          <Image src={gutshaus} alt="Das Gutshaus, in dem das Studio liegt" widths={[480, 640]} sizes="(min-width: 1080px) 1040px, 100vw" loading="eager" />
+        </div>
+      </section>
+
+      <!-- Räume -->
+      <section id="raeume" class="section">
+        <div class="wrap">
+          <h2 class="headline reveal">Drei Räume.<br /><span class="muted">Eine Auszeit.</span></h2>
+        </div>
+        <div class="carousel reveal" data-carousel>
+          <ul class="track" data-track>
+            {rooms.map((r) => (
+              <li class="card">
+                <Image src={r.img} alt={r.alt} widths={[480, 640]} sizes="(min-width: 900px) 760px, 85vw" loading="lazy" />
+                <div class="card-text">
+                  <p class="eyebrow light">{r.eyebrow}</p>
+                  <p class="card-title">{r.title}</p>
+                </div>
+              </li>
+            ))}
+          </ul>
+          <div class="wrap carousel-controls">
+            <div class="dots" aria-hidden="true">
+              {rooms.map((_, i) => <span data-dot={i} class:list={[{ active: i === 0 }]} />)}
+            </div>
+            <div class="arrows">
+              <button class="arrow" data-prev aria-label="Vorheriger Raum">‹</button>
+              <button class="arrow" data-next aria-label="Nächster Raum">›</button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Behandlungen -->
+      <section id="behandlungen" class="section alt">
+        <div class="wrap">
+          <h2 class="headline reveal">Behandlungen.<br /><span class="muted">Mit Pflege von {studio.brand}.</span></h2>
+          <div class="tiles">
+            {categories.map((c, i) => (
+              <article class="tile reveal" style={`--delay: ${i * 60}ms`}>
+                <p class="eyebrow">{c.accent}</p>
+                <h3>{c.title}</h3>
+                <p class="tile-intro">{c.intro}</p>
+                <ul>
+                  {c.items.map((t) => (
+                    <li>
+                      <span>{t.name}</span>
+                      {t.price && <span class="price">{t.price}</span>}
+                    </li>
+                  ))}
+                </ul>
+              </article>
+            ))}
+          </div>
+          <p class="note reveal">{extraNote}</p>
+        </div>
+      </section>
+
+      <!-- Über mich -->
+      <section class="section">
+        <div class="wrap narrow reveal">
+          <p class="quote">„Bei mir gibt es keine Fließbandtermine. Jede Behandlung beginnt mit einem Gespräch – und mit der Zeit, die Ihre Haut braucht.“</p>
+          <p class="signature">{studio.owner}, Inhaberin</p>
+        </div>
+      </section>
+
+      <!-- Kontakt -->
+      <section id="kontakt" class="section alt">
+        <div class="wrap contact reveal">
+          <h2 class="headline">Ein Anruf genügt.</h2>
+          <a class="phone" href={studio.phoneHref}>{studio.phone}</a>
+          <p class="muted">{studio.hours}</p>
+          <p class="address">{studio.street} · {studio.zip} {studio.city}</p>
+          <a class="link" href={studio.mapsUrl} target="_blank" rel="noopener">Route planen <span aria-hidden="true">›</span></a>
+        </div>
+      </section>
+    </main>
+
+    <footer class="wrap footer">
+      <p>© {new Date().getFullYear()} {studio.name}</p>
+      <nav aria-label="Rechtliches"><a href="/impressum">Impressum</a><a href="/datenschutz">Datenschutz</a></nav>
+    </footer>
+
+    <script>
+      const reduce = window.matchMedia('(prefers-reduced-motion: reduce)');
+
+      // Einblenden beim Scrollen, einmalig
+      const io = new IntersectionObserver(
+        (entries) => entries.forEach((e) => e.isIntersecting && (e.target.classList.add('in'), io.unobserve(e.target))),
+        { rootMargin: '0px 0px -80px 0px' },
+      );
+      document.querySelectorAll('.reveal').forEach((el) => io.observe(el));
+
+      // Hausfoto wächst mit dem Scrollen auf volle Größe – folgt dem Finger 1:1, ohne Zeitverzug
+      const media = document.querySelector<HTMLElement>('[data-hero-media]')!;
+      let req = 0;
+      const grow = () => {
+        req = 0;
+        const top = media.getBoundingClientRect().top;
+        const p = Math.min(1, Math.max(0, 1 - top / window.innerHeight));
+        media.style.transform = reduce.matches ? '' : `scale(${0.88 + 0.12 * p})`;
+      };
+      window.addEventListener('scroll', () => (req ||= requestAnimationFrame(grow)), { passive: true });
+      grow();
+
+      // Karussell: wischen übernimmt der Browser (Schwung, Einrasten, Gummiband); Pfeile und Punkte folgen
+      const track = document.querySelector<HTMLElement>('[data-track]')!;
+      const dots = [...document.querySelectorAll<HTMLElement>('[data-dot]')];
+      const step = () => (track.firstElementChild as HTMLElement).offsetWidth + 20;
+      const go = (dir: number) =>
+        track.scrollBy({ left: dir * step(), behavior: reduce.matches ? 'auto' : 'smooth' });
+      document.querySelector('[data-prev]')!.addEventListener('click', () => go(-1));
+      document.querySelector('[data-next]')!.addEventListener('click', () => go(1));
+      track.addEventListener(
+        'scroll',
+        () => {
+          const i = Math.round(track.scrollLeft / step());
+          dots.forEach((d, j) => d.classList.toggle('active', i === j));
+        },
+        { passive: true },
+      );
+    </script>
+
+    <style is:global>
+      :root {
+        --bg: #ffffff;
+        --alt: #f5f5f7;
+        --text: #1d1d1f;
+        --muted: #6e6e73;
+        --accent: #2c6e6a;
+        --hair: rgba(0, 0, 0, 0.08);
+        --ease-out: cubic-bezier(0.23, 1, 0.32, 1);
+        --wrap: 1040px;
+        --gutter: max(20px, env(safe-area-inset-left));
+      }
+
+      * { box-sizing: border-box; }
+
+      html {
+        scroll-behavior: smooth;
+        scroll-padding-top: 64px;
+        -webkit-text-size-adjust: 100%;
+      }
+
+      body {
+        margin: 0;
+        background: var(--bg);
+        color: var(--text);
+        font: 17px/1.47 -apple-system, BlinkMacSystemFont, system-ui, 'Segoe UI', sans-serif;
+        letter-spacing: -0.01em;
+        -webkit-font-smoothing: antialiased;
+        -webkit-tap-highlight-color: transparent;
+      }
+
+      img { display: block; max-width: 100%; }
+      a { color: inherit; text-decoration: none; }
+      h1, h2, h3, p { margin: 0; }
+
+      .wrap { max-width: var(--wrap); margin: 0 auto; padding: 0 var(--gutter); }
+      .narrow { max-width: 760px; }
+      .muted { color: var(--muted); }
+
+      /* Milchglas-Kopfzeile: Inhalt scrollt darunter durch */
+      .nav {
+        position: sticky;
+        top: 0;
+        z-index: 10;
+        background: rgba(255, 255, 255, 0.72);
+        backdrop-filter: saturate(180%) blur(20px);
+        -webkit-backdrop-filter: saturate(180%) blur(20px);
+        border-bottom: 1px solid var(--hair);
+        padding-top: env(safe-area-inset-top);
+      }
+
+      .nav-inner {
+        height: 56px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 24px;
+      }
+
+      .logo { height: 38px; width: auto; }
+
+      .nav nav { display: none; gap: 28px; font-size: 13px; }
+      .nav nav a { color: var(--muted); transition: color 200ms ease; }
+
+      @media (min-width: 760px) { .nav nav { display: flex; } }
+
+      @media (prefers-reduced-transparency: reduce) {
+        .nav { background: #fff; backdrop-filter: none; -webkit-backdrop-filter: none; }
+      }
+
+      /* Typografie: große Schrift eng, kleine Schrift normal */
+      .display {
+        font-size: clamp(40px, 10.5vw, 96px);
+        line-height: 1.04;
+        letter-spacing: -0.035em;
+        font-weight: 700;
+      }
+
+      .headline {
+        font-size: clamp(36px, 6vw, 64px);
+        line-height: 1.06;
+        letter-spacing: -0.03em;
+        font-weight: 700;
+        margin-bottom: 40px;
+      }
+
+      .eyebrow {
+        font-size: 14px;
+        font-weight: 600;
+        letter-spacing: 0;
+        color: var(--accent);
+      }
+
+      .eyebrow.light { color: rgba(255, 255, 255, 0.8); }
+
+      .lead {
+        font-size: clamp(21px, 2.6vw, 28px);
+        line-height: 1.25;
+        letter-spacing: -0.02em;
+        color: var(--muted);
+        margin-top: 12px;
+      }
+
+      /* Bedienelemente: Rückmeldung sofort beim Drücken */
+      .pill {
+        display: inline-flex;
+        align-items: center;
+        min-height: 44px;
+        padding: 0 22px;
+        border-radius: 980px;
+        background: var(--accent);
+        color: #fff;
+        font-size: 17px;
+        transition: transform 100ms ease-out, background-color 200ms ease;
+      }
+
+      .pill.small { min-height: 30px; padding: 0 14px; font-size: 13px; }
+
+      .link { color: var(--accent); font-size: 17px; }
+
+      .pill:active, .arrow:active { transform: scale(0.97); }
+
+      @media (hover: hover) and (pointer: fine) {
+        .pill:hover { background: #245c58; }
+        .link:hover { text-decoration: underline; }
+        .nav nav a:hover { color: var(--text); }
+      }
+
+      :focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; border-radius: 4px; }
+
+      /* Start */
+      .hero { padding-top: clamp(48px, 9vw, 96px); text-align: center; overflow: hidden; }
+
+      .actions {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        align-items: center;
+        gap: 20px 28px;
+        margin-top: 28px;
+      }
+
+      .hero-media {
+        max-width: var(--wrap);
+        margin: clamp(40px, 7vw, 72px) auto 0;
+        padding: 0 var(--gutter);
+        transform-origin: 50% 0;
+      }
+
+      .hero-media img {
+        width: 100%;
+        aspect-ratio: 16 / 10;
+        object-fit: cover;
+        border-radius: 28px;
+      }
+
+      /* Abschnitte */
+      .section { padding: clamp(80px, 12vw, 140px) 0; }
+      .section.alt { background: var(--alt); }
+
+      /* Karussell mit nativer Scroll-Physik */
+      .track {
+        list-style: none;
+        margin: 0;
+        padding: 0 var(--gutter);
+        padding-left: max(var(--gutter), calc((100vw - var(--wrap)) / 2 + var(--gutter)));
+        display: flex;
+        gap: 20px;
+        overflow-x: auto;
+        scroll-snap-type: x mandatory;
+        scroll-padding-left: max(var(--gutter), calc((100vw - var(--wrap)) / 2 + var(--gutter)));
+        overscroll-behavior-x: contain;
+        scrollbar-width: none;
+      }
+
+      .track::-webkit-scrollbar { display: none; }
+
+      .card {
+        position: relative;
+        flex: 0 0 min(85vw, 760px);
+        scroll-snap-align: start;
+        border-radius: 28px;
+        overflow: hidden;
+        aspect-ratio: 4 / 3;
+        background: var(--alt);
+      }
+
+      .card img { width: 100%; height: 100%; object-fit: cover; }
+
+      .card::after {
+        content: '';
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(to top, rgba(0, 0, 0, 0.55), transparent 50%);
+      }
+
+      .card-text { position: absolute; z-index: 1; left: 28px; right: 28px; bottom: 26px; color: #fff; }
+
+      .card-title {
+        font-size: clamp(24px, 3.4vw, 36px);
+        font-weight: 700;
+        line-height: 1.1;
+        letter-spacing: -0.025em;
+        margin-top: 4px;
+      }
+
+      .carousel-controls {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-top: 24px;
+      }
+
+      .dots { display: flex; gap: 8px; }
+
+      .dots span {
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+        background: rgba(0, 0, 0, 0.2);
+        transition: background-color 200ms ease, transform 200ms var(--ease-out);
+      }
+
+      .dots span.active { background: var(--text); transform: scale(1.15); }
+
+      .arrows { display: flex; gap: 12px; }
+
+      .arrow {
+        width: 44px;
+        height: 44px;
+        border: 0;
+        border-radius: 50%;
+        background: var(--alt);
+        color: var(--text);
+        font-size: 24px;
+        line-height: 1;
+        cursor: pointer;
+        transition: transform 100ms ease-out, background-color 200ms ease;
+      }
+
+      @media (hover: hover) and (pointer: fine) { .arrow:hover { background: #e8e8ed; } }
+
+      /* Behandlungs-Kacheln */
+      .tiles { display: grid; grid-template-columns: minmax(0, 1fr); gap: 20px; }
+
+      @media (min-width: 760px) { .tiles { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+
+      .tile {
+        background: var(--bg);
+        border-radius: 28px;
+        padding: 36px 32px 28px;
+      }
+
+      .tile h3 {
+        font-size: clamp(24px, 6.6vw, 32px);
+        hyphens: auto;
+        line-height: 1.1;
+        letter-spacing: -0.025em;
+        font-weight: 700;
+        margin-top: 6px;
+      }
+
+      .tile-intro { color: var(--muted); margin-top: 8px; }
+
+      .tile ul { list-style: none; margin: 20px 0 0; padding: 0; }
+
+      .tile li {
+        display: flex;
+        justify-content: space-between;
+        gap: 16px;
+        padding: 12px 0;
+        border-top: 1px solid var(--hair);
+      }
+
+      .tile li span:first-child { min-width: 0; overflow-wrap: anywhere; hyphens: auto; }
+
+      .price { color: var(--muted); font-variant-numeric: tabular-nums; }
+
+      .note { text-align: center; color: var(--muted); margin-top: 40px; }
+
+      /* Über mich */
+      .quote {
+        font-size: clamp(28px, 4.2vw, 44px);
+        line-height: 1.18;
+        letter-spacing: -0.025em;
+        font-weight: 600;
+      }
+
+      .signature { color: var(--muted); margin-top: 24px; }
+
+      /* Kontakt */
+      .contact { text-align: center; }
+      .contact .headline { margin-bottom: 16px; }
+
+      .phone {
+        display: inline-block;
+        font-size: clamp(36px, 6vw, 56px);
+        font-weight: 700;
+        letter-spacing: -0.02em;
+        color: var(--accent);
+        font-variant-numeric: tabular-nums;
+        margin-bottom: 8px;
+      }
+
+      .address { margin: 24px 0 8px; }
+
+      .footer {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: space-between;
+        gap: 12px;
+        padding-top: 20px;
+        padding-bottom: calc(24px + env(safe-area-inset-bottom));
+        font-size: 12px;
+        color: var(--muted);
+        border-top: 1px solid var(--hair);
+      }
+
+      .footer nav { display: flex; gap: 20px; }
+
+      /* Einblenden: Startbereich sofort gestaffelt, der Rest beim Scrollen */
+      .hero-text .in {
+        animation: rise 900ms var(--ease-out) both;
+        animation-delay: calc(var(--i, 0) * 90ms);
+      }
+
+      @keyframes rise {
+        from { opacity: 0; transform: translateY(20px); }
+      }
+
+      .reveal {
+        opacity: 0;
+        transform: translateY(32px);
+        transition: opacity 900ms var(--ease-out), transform 900ms var(--ease-out);
+        transition-delay: var(--delay, 0ms);
+      }
+
+      .reveal.in { opacity: 1; transform: none; }
+
+      @media (prefers-reduced-motion: reduce) {
+        html { scroll-behavior: auto; }
+        .hero-text .in { animation: fade 400ms ease both; }
+        .reveal { transform: none; transition: opacity 400ms ease; }
+        .pill, .arrow { transition: background-color 200ms ease; }
+        .pill:active, .arrow:active { transform: none; }
+      }
+
+      @keyframes fade { from { opacity: 0; } }
+    </style>
+  </body>
+</html>
