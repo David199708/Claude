@@ -1,0 +1,45 @@
+---
+import { studio } from '../data/site';
+const year = new Date().getFullYear();
+---
+
+<footer class="footer">
+  <div class="container inner">
+    <p>© {year} {studio.name} · {studio.street}, {studio.zip} {studio.city}</p>
+    <nav aria-label="Rechtliches">
+      <a href="/impressum">Impressum</a>
+      <a href="/datenschutz">Datenschutz</a>
+    </nav>
+  </div>
+</footer>
+
+<style>
+  .footer {
+    border-top: 1px solid var(--line);
+    padding: 28px 0 calc(28px + env(safe-area-inset-bottom));
+    font-size: 14px;
+    color: var(--muted);
+  }
+
+  .inner {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    gap: 12px 24px;
+  }
+
+  nav {
+    display: flex;
+    gap: 20px;
+  }
+
+  a {
+    text-decoration: none;
+  }
+
+  @media (hover: hover) and (pointer: fine) {
+    a:hover {
+      color: var(--ink);
+    }
+  }
+</style>

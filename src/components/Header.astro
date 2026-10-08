@@ -1,0 +1,89 @@
+---
+import { studio } from '../data/site';
+---
+
+<header class="header">
+  <div class="container inner">
+    <a href="/" class="logo" aria-label={`${studio.name} – Startseite`}>
+      <span class="logo-small">Kosmetik</span>
+      <span class="logo-main">im Gutshaus</span>
+    </a>
+    <nav aria-label="Hauptnavigation">
+      <a href="/#behandlungen">Behandlungen</a>
+      <a href="/#ueber-mich">Über mich</a>
+      <a href="/#kontakt">Kontakt</a>
+    </nav>
+    <a href={studio.phoneHref} class="btn btn-primary call">Anrufen</a>
+  </div>
+</header>
+
+<style>
+  .header {
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    background: rgba(251, 248, 243, 0.85);
+    backdrop-filter: saturate(1.4) blur(12px);
+    -webkit-backdrop-filter: saturate(1.4) blur(12px);
+    border-bottom: 1px solid rgba(226, 215, 198, 0.7);
+    padding-top: env(safe-area-inset-top);
+  }
+
+  .inner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 24px;
+    height: 68px;
+  }
+
+  .logo {
+    display: flex;
+    flex-direction: column;
+    text-decoration: none;
+    line-height: 1;
+  }
+
+  .logo-small {
+    font-size: 10px;
+    letter-spacing: 0.32em;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+
+  .logo-main {
+    font-family: var(--serif);
+    font-size: 24px;
+    margin-top: 4px;
+  }
+
+  nav {
+    display: none;
+    gap: 32px;
+    font-size: 15px;
+  }
+
+  nav a {
+    text-decoration: none;
+    color: var(--muted);
+    transition: color 200ms ease;
+  }
+
+  @media (hover: hover) and (pointer: fine) {
+    nav a:hover {
+      color: var(--ink);
+    }
+  }
+
+  .call {
+    min-height: 40px;
+    padding: 0 18px;
+    font-size: 14px;
+  }
+
+  @media (min-width: 760px) {
+    nav {
+      display: flex;
+    }
+  }
+</style>

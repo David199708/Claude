@@ -1,0 +1,398 @@
+---
+import Base from '../layouts/Base.astro';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import ManorIllustration from '../components/ManorIllustration.astro';
+import { studio, categories } from '../data/site';
+---
+
+<Base>
+  <Header />
+
+  <main>
+    <!-- Start -->
+    <section class="hero">
+      <div class="container hero-grid">
+        <div class="hero-text">
+          <p class="eyebrow reveal">Kosmetikstudio in {studio.city}</p>
+          <h1 class="reveal" style="--delay: 60ms">
+            Zeit für sich.<br /><em>Im Gutshaus.</em>
+          </h1>
+          <p class="lead reveal" style="--delay: 120ms">
+            Persönliche Kosmetik in ruhiger, besonderer Atmosphäre – mit viel Zeit,
+            Erfahrung und einem Blick für das, was Ihrer Haut guttut.
+          </p>
+          <div class="actions reveal" style="--delay: 180ms">
+            <a href={studio.phoneHref} class="btn btn-primary">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M22 16.9v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3.1 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 2.1 4.2 2 2 0 0 1 4.1 2h3a2 2 0 0 1 2 1.7c.1.9.4 1.8.7 2.7a2 2 0 0 1-.5 2.1L8 9.8a16 16 0 0 0 6 6l1.3-1.3a2 2 0 0 1 2.1-.4c.9.3 1.8.6 2.7.7a2 2 0 0 1 1.7 2z"/></svg>
+              Termin vereinbaren
+            </a>
+            <a href="#behandlungen" class="btn btn-ghost">Behandlungen ansehen</a>
+          </div>
+        </div>
+        <div class="hero-art reveal" style="--delay: 120ms">
+          <ManorIllustration />
+        </div>
+      </div>
+    </section>
+
+    <!-- Behandlungen -->
+    <section id="behandlungen" class="section">
+      <div class="container">
+        <div class="section-head reveal">
+          <p class="eyebrow">Behandlungen</p>
+          <h2>Was ich für Sie tun kann</h2>
+          <p class="note">Alle Preise inkl. MwSt. Gerne berate ich Sie persönlich, welche Behandlung zu Ihnen passt.</p>
+        </div>
+
+        <div class="categories">
+          {categories.map((cat, i) => (
+            <div class="category reveal" style={`--delay: ${i * 60}ms`}>
+              <h3>{cat.title}</h3>
+              <p class="cat-intro">{cat.intro}</p>
+              <ul>
+                {cat.items.map((t) => (
+                  <li>
+                    <div class="t-head">
+                      <span class="t-name">{t.name}</span>
+                      <span class="t-dots" aria-hidden="true" />
+                      <span class="t-price">{t.price}</span>
+                    </div>
+                    <p class="t-desc">
+                      {t.description}
+                      {t.duration && <span class="t-dur"> · {t.duration}</span>}
+                    </p>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+
+    <!-- Über mich -->
+    <section id="ueber-mich" class="section about">
+      <div class="container about-grid">
+        <div class="portrait reveal" aria-label="Platzhalter für ein Foto">
+          <span>Foto folgt</span>
+        </div>
+        <div class="about-text reveal" style="--delay: 80ms">
+          <p class="eyebrow">Über mich</p>
+          <h2>Schön, dass Sie da sind.</h2>
+          <p>
+            Ich bin {studio.owner} und führe das Studio „{studio.name}“ mit viel Herz.
+            <mark>PLATZHALTER: Hier stehen ein paar persönliche Sätze – Ausbildung, wie lange
+            schon, was Ihnen bei der Arbeit wichtig ist.</mark>
+          </p>
+          <p>
+            Bei mir gibt es keine Fließbandtermine: Jede Behandlung beginnt mit einem
+            Gespräch, und ich nehme mir die Zeit, die Ihre Haut braucht.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Kontakt -->
+    <section id="kontakt" class="section contact">
+      <div class="container">
+        <div class="contact-card reveal">
+          <div>
+            <p class="eyebrow">Termin & Kontakt</p>
+            <h2>Ich freue mich auf Sie.</h2>
+            <p class="lead">
+              {studio.hours}. Rufen Sie einfach an – ist niemand erreichbar,
+              rufe ich Sie gerne zurück.
+            </p>
+            <a href={studio.phoneHref} class="btn btn-primary phone">{studio.phone}</a>
+          </div>
+          <dl>
+            <div>
+              <dt>Adresse</dt>
+              <dd>
+                {studio.name}<br />
+                {studio.street}<br />
+                {studio.zip} {studio.city}<br />
+                <a href={studio.mapsUrl} target="_blank" rel="noopener">Route planen ↗</a>
+              </dd>
+            </div>
+            <div>
+              <dt>Telefon</dt>
+              <dd><a href={studio.phoneHref}>{studio.phone}</a></dd>
+            </div>
+            {studio.email && (
+              <div>
+                <dt>E-Mail</dt>
+                <dd><a href={`mailto:${studio.email}`}>{studio.email}</a></dd>
+              </div>
+            )}
+            <div>
+              <dt>Öffnungszeiten</dt>
+              <dd>{studio.hours}</dd>
+            </div>
+          </dl>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <Footer />
+</Base>
+
+<style>
+  /* Start */
+  .hero {
+    padding: clamp(48px, 9vw, 112px) 0 clamp(56px, 8vw, 96px);
+    background:
+      radial-gradient(60% 80% at 85% 20%, rgba(125, 139, 116, 0.12), transparent 70%),
+      var(--cream);
+  }
+
+  .hero-grid {
+    display: grid;
+    gap: 48px;
+    align-items: center;
+  }
+
+  h1 {
+    font-size: clamp(46px, 8vw, 84px);
+    margin: 16px 0 24px;
+  }
+
+  h1 em {
+    color: var(--sage-dark);
+  }
+
+  .lead {
+    font-size: 18px;
+    color: var(--muted);
+    max-width: 34em;
+  }
+
+  .actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin-top: 32px;
+  }
+
+  .hero-art {
+    color: var(--sage-dark);
+    max-width: 520px;
+    justify-self: center;
+    width: 100%;
+  }
+
+  @media (min-width: 900px) {
+    .hero-grid {
+      grid-template-columns: 1.1fr 1fr;
+    }
+  }
+
+  /* Abschnitte */
+  .section {
+    padding: clamp(64px, 10vw, 120px) 0;
+  }
+
+  .section-head {
+    max-width: 640px;
+    margin-bottom: 48px;
+  }
+
+  h2 {
+    font-size: clamp(36px, 5.5vw, 56px);
+    margin: 12px 0 16px;
+  }
+
+  .note {
+    color: var(--muted);
+    font-size: 15px;
+  }
+
+  /* Behandlungen */
+  .categories {
+    display: grid;
+    gap: 20px;
+  }
+
+  @media (min-width: 900px) {
+    .categories {
+      grid-template-columns: repeat(3, 1fr);
+    }
+  }
+
+  .category {
+    background: #fff;
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    padding: 28px 24px;
+  }
+
+  .category h3 {
+    font-size: 30px;
+  }
+
+  .cat-intro {
+    color: var(--muted);
+    font-size: 15px;
+    margin: 6px 0 20px;
+  }
+
+  .category ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+
+  .category li {
+    padding: 14px 0;
+    border-top: 1px solid var(--line);
+  }
+
+  .t-head {
+    display: flex;
+    align-items: baseline;
+    gap: 8px;
+  }
+
+  .t-name {
+    font-weight: 500;
+    font-size: 16px;
+  }
+
+  .t-dots {
+    flex: 1;
+    min-width: 16px;
+    border-bottom: 1px dotted #c9bba6;
+    transform: translateY(-4px);
+  }
+
+  .t-price {
+    font-variant-numeric: tabular-nums;
+    white-space: nowrap;
+    color: var(--sage-dark);
+    font-weight: 500;
+    font-size: 15px;
+  }
+
+  .t-desc {
+    font-size: 14px;
+    color: var(--muted);
+    margin-top: 2px;
+  }
+
+  .t-dur {
+    white-space: nowrap;
+  }
+
+  /* Über mich */
+  .about {
+    background: var(--cream);
+  }
+
+  .about-grid {
+    display: grid;
+    gap: 40px;
+    align-items: center;
+  }
+
+  @media (min-width: 900px) {
+    .about-grid {
+      grid-template-columns: 0.8fr 1fr;
+      gap: 72px;
+    }
+  }
+
+  .portrait {
+    aspect-ratio: 4 / 5;
+    border-radius: var(--radius);
+    background:
+      linear-gradient(160deg, rgba(255, 255, 255, 0.4), transparent),
+      var(--sand);
+    display: grid;
+    place-items: center;
+    color: var(--muted);
+    font-family: var(--serif);
+    font-style: italic;
+    font-size: 22px;
+    max-width: 440px;
+    width: 100%;
+  }
+
+  @media (max-width: 899px) {
+    .portrait {
+      aspect-ratio: 4 / 3;
+    }
+  }
+
+  .about-text p:not(.eyebrow) {
+    color: var(--muted);
+    margin-top: 16px;
+    max-width: 34em;
+  }
+
+  mark {
+    background: #fff3c4;
+    color: var(--ink);
+    padding: 0 2px;
+  }
+
+  /* Kontakt */
+  .contact-card {
+    display: grid;
+    gap: 40px;
+    background: var(--sage-dark);
+    color: #fff;
+    border-radius: calc(var(--radius) + 6px);
+    padding: clamp(32px, 6vw, 64px);
+  }
+
+  .contact-card .eyebrow,
+  .contact-card .lead,
+  .contact-card dt {
+    color: rgba(255, 255, 255, 0.72);
+  }
+
+  .contact-card .btn-primary {
+    background: #fff;
+    color: var(--sage-dark);
+    margin-top: 28px;
+    font-size: 17px;
+    font-variant-numeric: tabular-nums;
+  }
+
+  @media (hover: hover) and (pointer: fine) {
+    .contact-card .btn-primary:hover {
+      background: var(--cream);
+    }
+  }
+
+  dl {
+    margin: 0;
+    display: grid;
+    gap: 24px;
+    align-content: start;
+  }
+
+  dt {
+    font-size: 12px;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    margin-bottom: 4px;
+  }
+
+  dd {
+    margin: 0;
+  }
+
+  dd a {
+    text-underline-offset: 3px;
+  }
+
+  @media (min-width: 900px) {
+    .contact-card {
+      grid-template-columns: 1.2fr 1fr;
+      gap: 64px;
+    }
+  }
+</style>

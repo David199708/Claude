@@ -1,0 +1,34 @@
+---
+import LegalPage from '../components/LegalPage.astro';
+import { studio } from '../data/site';
+---
+
+<LegalPage title="Impressum">
+  <h2>Angaben gemäß § 5 DDG</h2>
+  <p>
+    {studio.owner}<br />
+    {studio.name}<br />
+    {studio.street}<br />
+    {studio.zip} {studio.city}
+  </p>
+
+  <h2>Kontakt</h2>
+  <p>
+    Telefon: <a href={studio.phoneHref}>{studio.phone}</a>
+    {studio.email && <><br />E-Mail: <a href={`mailto:${studio.email}`}>{studio.email}</a></>}
+  </p>
+
+  <h2>Umsatzsteuer</h2>
+  <p>
+    <mark>PLATZHALTER: Umsatzsteuer-ID nach § 27a UStG – oder, bei Kleinunternehmerregelung,
+    diesen Abschnitt entfernen.</mark>
+  </p>
+
+  <h2>Verbraucherstreitbeilegung</h2>
+  <p>
+    Wir sind nicht bereit oder verpflichtet, an Streitbeilegungsverfahren vor einer
+    Verbraucherschlichtungsstelle teilzunehmen.
+  </p>
+
+  <p><mark>Hinweis: Bitte vor Veröffentlichung prüfen, z. B. mit einem Impressum-Generator (eRecht24) oder einer Beratung.</mark></p>
+</LegalPage>
