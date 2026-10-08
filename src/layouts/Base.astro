@@ -9,7 +9,7 @@ interface Props {
 
 const {
   title = `${studio.name} – Kosmetikstudio in ${studio.city}`,
-  description = `${studio.name}: Kosmetik, Gesichtsbehandlungen, Maniküre und Fußpflege in ${studio.city}. Termine nach Vereinbarung unter ${studio.phone}.`,
+  description = `${studio.name}: ${studio.slogan}. Gesichtsbehandlungen, Maniküre, Massagen und Wellness in ${studio.city}. Termine nach Vereinbarung unter ${studio.phone}.`,
 } = Astro.props;
 
 const localBusiness = {

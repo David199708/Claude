@@ -3,7 +3,7 @@ import Base from '../layouts/Base.astro';
 import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
 import ManorIllustration from '../components/ManorIllustration.astro';
-import { studio, categories } from '../data/site';
+import { studio, categories, extraNote } from '../data/site';
 ---
 
 <Base>
@@ -16,7 +16,7 @@ import { studio, categories } from '../data/site';
         <div class="hero-text">
           <p class="eyebrow enter">Kosmetikstudio in {studio.city}</p>
           <h1 class="enter" style="--i: 1">
-            Zeit für sich.<br /><em>Im Gutshaus.</em>
+            Wohlfühlstunden<br /><em class="nowrap">für Körper und Sinne.</em>
           </h1>
           <p class="lead enter" style="--i: 2">
             Persönliche Kosmetik in ruhiger, besonderer Atmosphäre – mit viel Zeit,
@@ -42,12 +42,13 @@ import { studio, categories } from '../data/site';
         <div class="section-head reveal">
           <p class="eyebrow">Behandlungen</p>
           <h2>Was ich für Sie tun kann</h2>
-          <p class="note">Alle Preise inkl. MwSt. Gerne berate ich Sie persönlich, welche Behandlung zu Ihnen passt.</p>
+          <p class="note">Es erwartet Sie ein Komplettprogramm rund um die Schönheit – mit hochwertiger Pflege von {studio.brand}. Gerne berate ich Sie persönlich, welche Behandlung zu Ihnen passt.</p>
         </div>
 
         <div class="categories">
           {categories.map((cat, i) => (
             <div class="category reveal" style={`--delay: ${i * 60}ms`}>
+              <p class="accent" aria-hidden="true">{cat.accent}</p>
               <h3>{cat.title}</h3>
               <p class="cat-intro">{cat.intro}</p>
               <ul>
@@ -55,19 +56,26 @@ import { studio, categories } from '../data/site';
                   <li style={`--j: ${j}`}>
                     <div class="t-head">
                       <span class="t-name">{t.name}</span>
-                      <span class="t-dots" aria-hidden="true" />
-                      <span class="t-price">{t.price}</span>
+                      {t.price && (
+                        <>
+                          <span class="t-dots" aria-hidden="true" />
+                          <span class="t-price">{t.price}</span>
+                        </>
+                      )}
                     </div>
-                    <p class="t-desc">
-                      {t.description}
-                      {t.duration && <span class="t-dur"> · {t.duration}</span>}
-                    </p>
+                    {(t.description || t.duration) && (
+                      <p class="t-desc">
+                        {t.description}
+                        {t.duration && <span class="t-dur"> · {t.duration}</span>}
+                      </p>
+                    )}
                   </li>
                 ))}
               </ul>
             </div>
           ))}
         </div>
+        <p class="extra reveal">{extraNote}</p>
       </div>
     </section>
 
@@ -83,7 +91,7 @@ import { studio, categories } from '../data/site';
           <p>
             Ich bin {studio.owner} und führe das Studio „{studio.name}“ mit viel Herz.
             <mark>PLATZHALTER: Hier stehen ein paar persönliche Sätze – Ausbildung, wie lange
-            schon, was Ihnen bei der Arbeit wichtig ist.</mark>
+            schon, was ihr bei der Arbeit wichtig ist.</mark>
           </p>
           <p>
             Bei mir gibt es keine Fließbandtermine: Jede Behandlung beginnt mit einem
@@ -101,8 +109,8 @@ import { studio, categories } from '../data/site';
             <p class="eyebrow">Termin & Kontakt</p>
             <h2>Ich freue mich auf Sie.</h2>
             <p class="lead">
-              {studio.hours}. Rufen Sie einfach an – ist niemand erreichbar,
-              rufe ich Sie gerne zurück.
+              Vereinbaren Sie ganz einfach telefonisch einen Termin und
+              überzeugen Sie sich selbst!
             </p>
             <a href={studio.phoneHref} class="btn btn-primary phone">{studio.phone}</a>
           </div>
@@ -144,7 +152,7 @@ import { studio, categories } from '../data/site';
   .hero {
     padding: clamp(48px, 9vw, 112px) 0 clamp(56px, 8vw, 96px);
     background:
-      radial-gradient(60% 80% at 85% 20%, rgba(125, 139, 116, 0.12), transparent 70%),
+      radial-gradient(60% 80% at 85% 20%, rgba(143, 207, 176, 0.22), transparent 70%),
       var(--cream);
   }
 
@@ -155,8 +163,14 @@ import { studio, categories } from '../data/site';
   }
 
   h1 {
-    font-size: clamp(46px, 8vw, 84px);
+    font-size: clamp(42px, 5.4vw, 66px);
     margin: 16px 0 24px;
+  }
+
+  @media (min-width: 900px) {
+    .nowrap {
+      white-space: nowrap;
+    }
   }
 
   h1 em {
@@ -215,10 +229,29 @@ import { studio, categories } from '../data/site';
     gap: 20px;
   }
 
-  @media (min-width: 900px) {
+  @media (min-width: 760px) {
     .categories {
-      grid-template-columns: repeat(3, 1fr);
+      grid-template-columns: repeat(2, 1fr);
     }
+  }
+
+  .accent {
+    font-family: 'Allura', cursive;
+    font-size: 30px;
+    line-height: 1;
+    color: var(--sage-dark);
+    margin-bottom: 4px;
+    transform: rotate(-4deg);
+    transform-origin: left;
+  }
+
+  .extra {
+    margin-top: 28px;
+    text-align: center;
+    color: var(--muted);
+    font-family: var(--serif);
+    font-style: italic;
+    font-size: 21px;
   }
 
   .category {
@@ -245,7 +278,7 @@ import { studio, categories } from '../data/site';
   }
 
   .category li {
-    padding: 14px 0;
+    padding: 11px 0;
     border-top: 1px solid var(--line);
   }
 

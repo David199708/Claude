@@ -2,13 +2,14 @@
 @import '@fontsource/cormorant-garamond/500.css';
 @import '@fontsource/cormorant-garamond/400-italic.css';
 @import '@fontsource-variable/inter';
+@import '@fontsource/allura/400.css';
 
 :root {
   --cream: #f7f2ea;
   --paper: #fbf8f3;
   --sand: #e8dccb;
-  --sage: #7d8b74;
-  --sage-dark: #5c6955;
+  --sage: #8fcfb0; /* Mint aus dem Logo */
+  --sage-dark: #2c6e6a; /* Petrol aus dem Logo */
   --ink: #2f2a25;
   --muted: #6f665c;
   --line: #e2d7c6;
@@ -122,7 +123,7 @@ p {
 
 @media (hover: hover) and (pointer: fine) {
   .btn-primary:hover {
-    background: #4d5947;
+    background: #245c58;
   }
   .btn-ghost:hover {
     background: rgba(47, 42, 37, 0.05);

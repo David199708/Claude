@@ -3,7 +3,9 @@
 
 export const studio = {
   name: 'Kosmetik im Gutshaus',
-  owner: 'PLATZHALTER Vorname Nachname',
+  owner: 'Barbara Schäfer',
+  slogan: 'Wohlfühlstunden für Körper und Sinne',
+  brand: 'BABOR',
   street: 'Hofstraße 2',
   zip: '63589',
   city: 'Linsengericht-Altenhaßlau',
@@ -15,68 +17,58 @@ export const studio = {
     'https://www.google.com/maps/search/?api=1&query=Kosmetik+im+Gutshaus+Hofstra%C3%9Fe+2+63589+Linsengericht',
 };
 
-export type Treatment = { name: string; description: string; duration?: string; price: string };
-export type Category = { title: string; intro: string; items: Treatment[] };
+export type Treatment = { name: string; description?: string; duration?: string; price?: string };
+export type Category = { title: string; accent: string; intro: string; items: Treatment[] };
 
-// PLATZHALTER: Behandlungen und Preise sind Beispiele und müssen angepasst werden.
+// Behandlungen laut Angebots-Flyer. Preise, Dauer und Beschreibungen können pro Behandlung
+// ergänzt werden, z. B. { name: 'Maniküre', duration: '45 Min.', price: '35 €' }.
+const list = (...names: string[]): Treatment[] => names.map((name) => ({ name }));
+
 export const categories: Category[] = [
   {
-    title: 'Gesicht',
-    intro: 'Pflege, die sich nach Ihrer Haut richtet – nicht nach einem Schema.',
-    items: [
-      {
-        name: 'Klassische Gesichtsbehandlung',
-        description: 'Reinigung, Peeling, Ausreinigung, Maske und Massage.',
-        duration: '75 Min.',
-        price: 'ab 00 €',
-      },
-      {
-        name: 'Feuchtigkeitsbehandlung',
-        description: 'Intensive Pflege für trockene und müde Haut.',
-        duration: '60 Min.',
-        price: 'ab 00 €',
-      },
-      {
-        name: 'Augenbrauen & Wimpern färben',
-        description: 'Formen und Färben für einen klaren, natürlichen Blick.',
-        duration: '30 Min.',
-        price: 'ab 00 €',
-      },
-    ],
+    title: 'Gesichtsbehandlungen',
+    accent: 'Genießen',
+    intro: 'Pflege, die sich nach Ihrer Haut richtet.',
+    items: list(
+      'Basisbehandlung',
+      'Reinigungsbehandlung',
+      'Wohlfühlbehandlung',
+      'Exklusivbehandlung',
+      'Anti-Age-Behandlung',
+      'Herrenbehandlung',
+      'Hot-Stone-Gesichtsbehandlung',
+      'Ultraschall',
+    ),
   },
   {
-    title: 'Hände & Füße',
-    intro: 'Gepflegte Hände und Füße – mit Ruhe und Sorgfalt.',
-    items: [
-      {
-        name: 'Maniküre',
-        description: 'Nagelform, Nagelhautpflege und Handmassage.',
-        duration: '45 Min.',
-        price: 'ab 00 €',
-      },
-      {
-        name: 'Kosmetische Fußpflege',
-        description: 'Fußbad, Nagelpflege, Hornhautentfernung und Pflege.',
-        duration: '60 Min.',
-        price: 'ab 00 €',
-      },
-    ],
+    title: 'Augen & Hände',
+    accent: 'Verwöhnen',
+    intro: 'Die kleinen Details, die viel ausmachen.',
+    items: list(
+      'Augenbrauenkorrektur',
+      'Brauenfärben',
+      'Wimpernfärben',
+      'Maniküre',
+      'Handpackung',
+      'Handmassage',
+    ),
   },
   {
-    title: 'Körper & Wohlbefinden',
-    intro: 'Zeit für sich – in der Stille des Gutshauses.',
-    items: [
-      {
-        name: 'Entspannungsmassage',
-        description: 'Rücken, Nacken und Schultern.',
-        duration: '30 Min.',
-        price: 'ab 00 €',
-      },
-      {
-        name: 'Haarentfernung mit Warmwachs',
-        description: 'Schonend und langanhaltend.',
-        price: 'ab 00 €',
-      },
-    ],
+    title: 'Pflege & Packungen',
+    accent: 'Wellness',
+    intro: 'Intensive Pflege für Haut und Körper.',
+    items: list('Algenmodellage', 'Vliesmasken', 'Dekolleté-Pflege', 'Enthaarungen'),
+  },
+  {
+    title: 'Massagen',
+    accent: 'Relaxen',
+    intro: 'Energie tanken – in der Ruhe des Gutshauses.',
+    items: list(
+      'Entspannungsmassage',
+      'Ayurvedische Rückenmassage',
+      'Ayurvedische Hot-Stone-Rückenmassage',
+    ),
   },
 ];
+
+export const extraNote = 'Außerdem: wechselnde Trendbehandlungen – fragen Sie gerne nach.';

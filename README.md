@@ -8,8 +8,9 @@ Gebaut mit [Astro](https://astro.build), ohne Cookies, Tracking oder externe Sch
 Fast alle Texte stehen in **`src/data/site.ts`**: Name, Adresse, Telefon, Behandlungen und Preise.
 Alles mit `PLATZHALTER` muss noch ersetzt werden:
 
-- `src/data/site.ts`: Name der Inhaberin, E-Mail, Behandlungen und Preise
+- `src/data/site.ts`: E-Mail, Preise und Dauer der Behandlungen (optional)
 - `src/pages/index.astro`: Text im Abschnitt „Über mich“, Foto
+- `public/logo.png`: Logo ablegen – es erscheint dann automatisch in der Kopfzeile
 - `src/pages/impressum.astro` und `src/pages/datenschutz.astro`: Rechtstexte prüfen
 
 ## Lokal starten
