@@ -164,6 +164,39 @@ a:focus-visible {
   transform: none;
 }
 
+/* Überschriften bauen sich Wort für Wort auf, aus leichter Unschärfe */
+.word {
+  display: inline-block;
+  opacity: 0;
+  transform: translateY(8px);
+  filter: blur(4px);
+  transition:
+    opacity 600ms var(--ease-out),
+    transform 600ms var(--ease-out),
+    filter 600ms var(--ease-out);
+  transition-delay: calc(var(--delay, 0ms) + 100ms + var(--w) * 50ms);
+}
+
+.is-visible .word {
+  opacity: 1;
+  transform: none;
+  filter: none;
+}
+
+/* Telefon-Symbol klingelt kurz: zeigt, dass der Button anruft */
+@media (hover: hover) and (pointer: fine) {
+  .ring:hover svg {
+    animation: ring 500ms var(--ease-out);
+  }
+}
+
+@keyframes ring {
+  20% { transform: rotate(-14deg); }
+  40% { transform: rotate(12deg); }
+  60% { transform: rotate(-8deg); }
+  80% { transform: rotate(4deg); }
+}
+
 /* Bild-Enthüllung von unten nach oben */
 .reveal-clip {
   clip-path: inset(0 0 100% 0);
@@ -194,6 +227,14 @@ a:focus-visible {
   .reveal {
     transform: none;
     transition: opacity 300ms ease;
+  }
+  .word {
+    transform: none;
+    filter: none;
+    transition: opacity 300ms ease;
+  }
+  .ring:hover svg {
+    animation: none;
   }
   .reveal-clip {
     clip-path: none;

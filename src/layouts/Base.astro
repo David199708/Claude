@@ -46,6 +46,15 @@ const localBusiness = {
   <body>
     <slot />
     <script>
+      // Überschriften Wort für Wort: jedes Wort bekommt einen eigenen Span mit Index für die Staffelung
+      document.querySelectorAll<HTMLElement>('.words').forEach((h) => {
+        h.setAttribute('aria-label', h.textContent!.trim());
+        h.innerHTML = h
+          .textContent!.trim()
+          .split(/\s+/)
+          .map((w, i) => `<span class="word" aria-hidden="true" style="--w: ${i}">${w}</span>`)
+          .join(' ');
+      });
       const els = document.querySelectorAll<HTMLElement>('.reveal, .reveal-clip, .reveal-draw');
       const io = new IntersectionObserver(
         (entries) => {
