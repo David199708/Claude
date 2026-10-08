@@ -17,6 +17,7 @@
   --sans: 'Inter Variable', system-ui, sans-serif;
 
   --ease-out: cubic-bezier(0.23, 1, 0.32, 1);
+  --ease-in-out: cubic-bezier(0.77, 0, 0.175, 1);
   --radius: 14px;
   --gutter: clamp(16px, 5vw, 48px);
   --max: 1120px;
@@ -30,7 +31,7 @@
 
 html {
   scroll-behavior: smooth;
-  scroll-padding-top: 80px;
+  scroll-padding-top: 88px;
   -webkit-text-size-adjust: 100%;
 }
 
@@ -134,13 +135,26 @@ a:focus-visible {
   outline-offset: 3px;
 }
 
-/* Sanftes Einblenden beim Scrollen */
+/* Einstieg beim Laden: gestaffelt, als CSS-Animation (läuft flüssig, auch während die Seite lädt) */
+.enter {
+  animation: enter 800ms var(--ease-out) both;
+  animation-delay: calc(100ms + var(--i, 0) * 80ms);
+}
+
+@keyframes enter {
+  from {
+    opacity: 0;
+    transform: translateY(16px);
+  }
+}
+
+/* Sanftes Einblenden beim Scrollen, einmalig */
 .reveal {
   opacity: 0;
-  transform: translateY(12px);
+  transform: translateY(16px);
   transition:
-    opacity 700ms ease,
-    transform 700ms var(--ease-out);
+    opacity 600ms var(--ease-out),
+    transform 600ms var(--ease-out);
   transition-delay: var(--delay, 0ms);
 }
 
@@ -149,17 +163,49 @@ a:focus-visible {
   transform: none;
 }
 
+/* Bild-Enthüllung von unten nach oben */
+.reveal-clip {
+  clip-path: inset(0 0 100% 0);
+  transition: clip-path 600ms var(--ease-in-out);
+  transition-delay: var(--delay, 0ms);
+}
+
+.reveal-clip.is-visible {
+  clip-path: inset(0 0 0 0);
+}
+
+.no-js .reveal,
+.no-js .reveal-clip {
+  opacity: 1;
+  transform: none;
+  clip-path: none;
+}
+
+/* Weniger Bewegung: nur Überblenden, keine Positionsänderungen */
 @media (prefers-reduced-motion: reduce) {
   html {
     scroll-behavior: auto;
+  }
+  .enter {
+    animation-name: fade;
+    animation-duration: 300ms;
   }
   .reveal {
     transform: none;
     transition: opacity 300ms ease;
   }
+  .reveal-clip {
+    clip-path: none;
+    opacity: 0;
+    transition: opacity 300ms ease;
+  }
+  .reveal-clip.is-visible {
+    opacity: 1;
+  }
 }
 
-.no-js .reveal {
-  opacity: 1;
-  transform: none;
+@keyframes fade {
+  from {
+    opacity: 0;
+  }
 }

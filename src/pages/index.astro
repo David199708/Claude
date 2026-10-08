@@ -14,15 +14,15 @@ import { studio, categories } from '../data/site';
     <section class="hero">
       <div class="container hero-grid">
         <div class="hero-text">
-          <p class="eyebrow reveal">Kosmetikstudio in {studio.city}</p>
-          <h1 class="reveal" style="--delay: 60ms">
+          <p class="eyebrow enter">Kosmetikstudio in {studio.city}</p>
+          <h1 class="enter" style="--i: 1">
             Zeit für sich.<br /><em>Im Gutshaus.</em>
           </h1>
-          <p class="lead reveal" style="--delay: 120ms">
+          <p class="lead enter" style="--i: 2">
             Persönliche Kosmetik in ruhiger, besonderer Atmosphäre – mit viel Zeit,
             Erfahrung und einem Blick für das, was Ihrer Haut guttut.
           </p>
-          <div class="actions reveal" style="--delay: 180ms">
+          <div class="actions enter" style="--i: 3">
             <a href={studio.phoneHref} class="btn btn-primary">
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M22 16.9v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3.1 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 2.1 4.2 2 2 0 0 1 4.1 2h3a2 2 0 0 1 2 1.7c.1.9.4 1.8.7 2.7a2 2 0 0 1-.5 2.1L8 9.8a16 16 0 0 0 6 6l1.3-1.3a2 2 0 0 1 2.1-.4c.9.3 1.8.6 2.7.7a2 2 0 0 1 1.7 2z"/></svg>
               Termin vereinbaren
@@ -30,7 +30,7 @@ import { studio, categories } from '../data/site';
             <a href="#behandlungen" class="btn btn-ghost">Behandlungen ansehen</a>
           </div>
         </div>
-        <div class="hero-art reveal" style="--delay: 120ms">
+        <div class="hero-art reveal-draw">
           <ManorIllustration />
         </div>
       </div>
@@ -51,8 +51,8 @@ import { studio, categories } from '../data/site';
               <h3>{cat.title}</h3>
               <p class="cat-intro">{cat.intro}</p>
               <ul>
-                {cat.items.map((t) => (
-                  <li>
+                {cat.items.map((t, j) => (
+                  <li style={`--j: ${j}`}>
                     <div class="t-head">
                       <span class="t-name">{t.name}</span>
                       <span class="t-dots" aria-hidden="true" />
@@ -74,7 +74,7 @@ import { studio, categories } from '../data/site';
     <!-- Über mich -->
     <section id="ueber-mich" class="section about">
       <div class="container about-grid">
-        <div class="portrait reveal" aria-label="Platzhalter für ein Foto">
+        <div class="portrait reveal-clip" aria-label="Platzhalter für ein Foto">
           <span>Foto folgt</span>
         </div>
         <div class="about-text reveal" style="--delay: 80ms">
@@ -96,7 +96,7 @@ import { studio, categories } from '../data/site';
     <!-- Kontakt -->
     <section id="kontakt" class="section contact">
       <div class="container">
-        <div class="contact-card reveal">
+        <div class="contact-card reveal reveal-scale">
           <div>
             <p class="eyebrow">Termin & Kontakt</p>
             <h2>Ich freue mich auf Sie.</h2>
@@ -113,7 +113,7 @@ import { studio, categories } from '../data/site';
                 {studio.name}<br />
                 {studio.street}<br />
                 {studio.zip} {studio.city}<br />
-                <a href={studio.mapsUrl} target="_blank" rel="noopener">Route planen ↗</a>
+                <a href={studio.mapsUrl} target="_blank" rel="noopener" class="route">Route planen <span class="arrow" aria-hidden="true">↗</span></a>
               </dd>
             </div>
             <div>
@@ -393,6 +393,50 @@ import { studio, categories } from '../data/site';
     .contact-card {
       grid-template-columns: 1.2fr 1fr;
       gap: 64px;
+    }
+  }
+  /* Behandlungen erscheinen nach ihrer Karte, Zeile für Zeile */
+  .category li {
+    opacity: 0;
+    transform: translateY(8px);
+    transition:
+      opacity 500ms var(--ease-out),
+      transform 500ms var(--ease-out);
+    transition-delay: calc(var(--delay, 0ms) + 200ms + var(--j, 0) * 60ms);
+  }
+
+  .category.is-visible li,
+  :global(.no-js) .category li {
+    opacity: 1;
+    transform: none;
+  }
+
+  /* Kontaktkarte: leichtes Heranwachsen statt nur Hochschieben */
+  .reveal-scale {
+    transform: translateY(16px) scale(0.98);
+  }
+
+  .reveal-scale.is-visible {
+    transform: none;
+  }
+
+  /* Pfeil bei „Route planen“ zeigt die Richtung an */
+  .arrow {
+    display: inline-block;
+    transition: transform 200ms var(--ease-out);
+  }
+
+  @media (hover: hover) and (pointer: fine) {
+    .route:hover .arrow {
+      transform: translate(2px, -2px);
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .category li,
+    .reveal-scale {
+      transform: none;
+      transition-property: opacity;
     }
   }
 </style>

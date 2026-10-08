@@ -1,43 +1,82 @@
 ---
-// Schlichte Linienzeichnung eines Gutshauses. Wird später durch ein echtes Foto ersetzt.
+// Schlichte Linienzeichnung eines Gutshauses, die sich beim Laden einmal selbst zeichnet.
+// Alle Formen sind Pfade mit pathLength="1", damit die Strich-Animation überall gleich lang ist.
+const win = (x: number, y: number) => `M${x} ${y} h26 v36 h-26 Z`;
+const upper = [132, 182, 272, 322];
 ---
 
-<svg viewBox="0 0 480 300" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-  <!-- Bäume -->
-  <path d="M40 262 V214 M40 222 c-22 -6 -26 -40 -6 -52 c-2 -22 26 -28 34 -10 c18 4 18 34 2 42 c-6 14 -20 18 -30 20" opacity="0.55" />
-  <path d="M440 262 V206 M440 214 c-20 -4 -26 -36 -8 -48 c0 -24 28 -28 34 -8 c18 6 14 36 -2 42 c-6 12 -16 14 -24 14" opacity="0.55" />
-  <!-- Hauptdach -->
-  <path d="M96 128 L240 64 L384 128" />
-  <path d="M110 128 H370" />
-  <!-- Gaube / Giebel -->
-  <path d="M206 128 L240 98 L274 128" />
-  <circle cx="240" cy="116" r="6" />
-  <!-- Schornsteine -->
-  <path d="M146 106 V84 H160 V100" />
-  <path d="M320 100 V84 H334 V106" />
+<svg class="manor" viewBox="0 0 480 300" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
   <!-- Fassade -->
-  <path d="M110 128 V262 H370 V128" />
-  <path d="M104 262 H376" />
-  <!-- Fenster oben -->
-  <g>
-    <rect x="132" y="148" width="26" height="36" rx="1" />
-    <rect x="182" y="148" width="26" height="36" rx="1" />
-    <rect x="272" y="148" width="26" height="36" rx="1" />
-    <rect x="322" y="148" width="26" height="36" rx="1" />
-    <path d="M145 148 V184 M195 148 V184 M285 148 V184 M335 148 V184" opacity="0.5" />
+  <g style="--d: 0ms">
+    <path pathLength="1" d="M110 128 V262 H370 V128" />
+    <path pathLength="1" d="M104 262 H376" />
   </g>
-  <!-- Fenster unten -->
-  <g>
-    <rect x="132" y="208" width="26" height="36" rx="1" />
-    <rect x="182" y="208" width="26" height="36" rx="1" />
-    <rect x="272" y="208" width="26" height="36" rx="1" />
-    <rect x="322" y="208" width="26" height="36" rx="1" />
-    <path d="M145 208 V244 M195 208 V244 M285 208 V244 M335 208 V244" opacity="0.5" />
+  <!-- Dach, Giebel, Schornsteine -->
+  <g style="--d: 250ms">
+    <path pathLength="1" d="M96 128 L240 64 L384 128" />
+    <path pathLength="1" d="M110 128 H370" />
+    <path pathLength="1" d="M206 128 L240 98 L274 128" />
+    <path pathLength="1" d="M234 116 a6 6 0 1 0 12 0 a6 6 0 1 0 -12 0" />
+    <path pathLength="1" d="M146 106 V84 H160 V100" />
+    <path pathLength="1" d="M320 100 V84 H334 V106" />
+  </g>
+  <!-- Fenster -->
+  <g style="--d: 550ms">
+    {upper.map((x) => <path pathLength="1" d={win(x, 148)} />)}
+    <path pathLength="1" d={win(226, 148).replace('h26', 'h28').replace('h-26', 'h-28')} />
+    {upper.map((x) => <path pathLength="1" d={win(x, 208)} />)}
+  </g>
+  <g style="--d: 750ms" opacity="0.5">
+    {upper.map((x) => <path pathLength="1" d={`M${x + 13} 148 V184`} />)}
+    {upper.map((x) => <path pathLength="1" d={`M${x + 13} 208 V244`} />)}
   </g>
   <!-- Eingang -->
-  <path d="M222 262 V214 a18 18 0 0 1 36 0 V262" />
-  <path d="M240 196 V262" opacity="0.5" />
-  <rect x="226" y="148" width="28" height="36" rx="1" />
-  <!-- Weg -->
-  <path d="M214 262 L196 292 M266 262 L284 292" opacity="0.4" />
+  <g style="--d: 700ms">
+    <path pathLength="1" d="M222 262 V214 a18 18 0 0 1 36 0 V262" />
+  </g>
+  <g style="--d: 900ms" opacity="0.5">
+    <path pathLength="1" d="M240 196 V262" />
+  </g>
+  <!-- Bäume und Weg -->
+  <g style="--d: 900ms" opacity="0.55">
+    <path pathLength="1" d="M40 262 V214 M40 222 c-22 -6 -26 -40 -6 -52 c-2 -22 26 -28 34 -10 c18 4 18 34 2 42 c-6 14 -20 18 -30 20" />
+    <path pathLength="1" d="M440 262 V206 M440 214 c-20 -4 -26 -36 -8 -48 c0 -24 28 -28 34 -8 c18 6 14 36 -2 42 c-6 12 -16 14 -24 14" />
+  </g>
+  <g style="--d: 1100ms" opacity="0.4">
+    <path pathLength="1" d="M214 262 L196 292 M266 262 L284 292" />
+  </g>
 </svg>
+
+<style>
+  /* Erklärende Einmal-Animation: das Haus wird Linie für Linie gezeichnet. */
+  .manor path {
+    stroke-dasharray: 1;
+    stroke-dashoffset: 1;
+    animation: draw 1400ms var(--ease-in-out) forwards;
+    animation-delay: calc(300ms + var(--d, 0ms));
+  }
+
+  /* Startet erst, wenn die Zeichnung sichtbar ist (auf dem Handy liegt sie unter dem Text) */
+  :global(.reveal-draw:not(.is-visible)) .manor path {
+    animation-play-state: paused;
+  }
+
+  :global(.no-js) .manor path {
+    stroke-dasharray: none;
+    animation: none;
+  }
+
+  @keyframes draw {
+    to {
+      stroke-dashoffset: 0;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .manor path {
+      stroke-dasharray: none;
+      stroke-dashoffset: 0;
+      animation: none;
+    }
+  }
+</style>

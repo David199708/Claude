@@ -1,12 +1,23 @@
 ---
+import fs from 'node:fs';
+import path from 'node:path';
 import { studio } from '../data/site';
+
+// Sobald public/logo.png existiert, wird das Logo statt des Schriftzugs gezeigt.
+const hasLogo = fs.existsSync(path.join(process.cwd(), 'public/logo.png'));
 ---
 
-<header class="header">
+<header class="header" data-header>
   <div class="container inner">
     <a href="/" class="logo" aria-label={`${studio.name} – Startseite`}>
-      <span class="logo-small">Kosmetik</span>
-      <span class="logo-main">im Gutshaus</span>
+      {hasLogo ? (
+        <img src="/logo.png" alt={studio.name} class="logo-img" height="52" />
+      ) : (
+        <>
+          <span class="logo-small">Kosmetik</span>
+          <span class="logo-main">im Gutshaus</span>
+        </>
+      )}
     </a>
     <nav aria-label="Hauptnavigation">
       <a href="/#behandlungen">Behandlungen</a>
@@ -16,6 +27,15 @@ import { studio } from '../data/site';
     <a href={studio.phoneHref} class="btn btn-primary call">Anrufen</a>
   </div>
 </header>
+
+<script>
+  const header = document.querySelector<HTMLElement>('[data-header]');
+  if (header) {
+    const update = () => header.toggleAttribute('data-scrolled', window.scrollY > 8);
+    update();
+    window.addEventListener('scroll', update, { passive: true });
+  }
+</script>
 
 <style>
   .header {
@@ -29,12 +49,28 @@ import { studio } from '../data/site';
     padding-top: env(safe-area-inset-top);
   }
 
+  /* Schatten erscheint erst, wenn Inhalt unter der Kopfzeile liegt */
+  .header::after {
+    content: '';
+    position: absolute;
+    inset: 100% 0 auto;
+    height: 16px;
+    background: linear-gradient(rgba(47, 42, 37, 0.06), transparent);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 200ms ease;
+  }
+
+  .header[data-scrolled]::after {
+    opacity: 1;
+  }
+
   .inner {
     display: flex;
     align-items: center;
     justify-content: space-between;
     gap: 24px;
-    height: 68px;
+    height: 76px;
   }
 
   .logo {
@@ -42,6 +78,11 @@ import { studio } from '../data/site';
     flex-direction: column;
     text-decoration: none;
     line-height: 1;
+  }
+
+  .logo-img {
+    height: 52px;
+    width: auto;
   }
 
   .logo-small {
@@ -64,14 +105,32 @@ import { studio } from '../data/site';
   }
 
   nav a {
+    position: relative;
     text-decoration: none;
     color: var(--muted);
     transition: color 200ms ease;
   }
 
+  /* Unterstreichung wächst von links */
+  nav a::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: -4px;
+    height: 1px;
+    background: currentColor;
+    transform: scaleX(0.001);
+    transform-origin: left;
+    transition: transform 200ms var(--ease-out);
+  }
+
   @media (hover: hover) and (pointer: fine) {
     nav a:hover {
       color: var(--ink);
+    }
+    nav a:hover::after {
+      transform: scaleX(1);
     }
   }
 
