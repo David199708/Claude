@@ -3,9 +3,9 @@ import Base from '../layouts/Base.astro';
 import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
 import ManorIllustration from '../components/ManorIllustration.astro';
-import { Image } from 'astro:assets';
-import { studio, categories, extraNote } from '../data/site';
-import gutshaus from '../assets/gutshaus.webp';
+import Treatments from '../components/Treatments.astro';
+import HouseTour from '../components/HouseTour.astro';
+import { studio } from '../data/site';
 ---
 
 <Base>
@@ -47,67 +47,12 @@ import gutshaus from '../assets/gutshaus.webp';
           <p class="note">Es erwartet Sie ein Komplettprogramm rund um die Schönheit – mit hochwertiger Pflege von {studio.brand}. Gerne berate ich Sie persönlich, welche Behandlung zu Ihnen passt.</p>
         </div>
 
-        <div class="categories">
-          {categories.map((cat, i) => (
-            <div class="category reveal" style={`--delay: ${i * 60}ms`}>
-              <p class="accent" aria-hidden="true">{cat.accent}</p>
-              <h3>{cat.title}</h3>
-              <p class="cat-intro">{cat.intro}</p>
-              <ul>
-                {cat.items.map((t, j) => (
-                  <li style={`--j: ${j}`}>
-                    <div class="t-head">
-                      <span class="t-name">{t.name}</span>
-                      {t.price && (
-                        <>
-                          <span class="t-dots" aria-hidden="true" />
-                          <span class="t-price">{t.price}</span>
-                        </>
-                      )}
-                    </div>
-                    {(t.description || t.duration) && (
-                      <p class="t-desc">
-                        {t.description}
-                        {t.duration && <span class="t-dur"> · {t.duration}</span>}
-                      </p>
-                    )}
-                  </li>
-                ))}
-              </ul>
-            </div>
-          ))}
-        </div>
-        <p class="extra reveal">{extraNote}</p>
+        <Treatments />
       </div>
     </section>
 
-    <!-- Das Gutshaus -->
-    <section id="gutshaus" class="section house">
-      <div class="container house-grid">
-        <figure class="house-photo reveal-clip">
-          <Image
-            src={gutshaus}
-            alt="Das Gutshaus in der Hofstraße in Altenhaßlau: rotes Sandsteinhaus mit petrolfarbenen Fensterläden"
-            widths={[480, 640]}
-            sizes="(min-width: 900px) 560px, 100vw"
-            loading="lazy"
-          />
-        </figure>
-        <div class="house-text reveal" style="--delay: 120ms">
-          <p class="eyebrow">Das Gutshaus</p>
-          <h2>Ein besonderer Ort für Ihre Auszeit.</h2>
-          <p>
-            Mein Studio liegt im Gutshaus in der {studio.street} – einem Haus aus rotem
-            Sandstein mit grünen Fensterläden, umgeben von Bäumen. Hier finden Sie Ruhe
-            abseits vom Alltag.
-          </p>
-          <p>
-            Schon beim Ankommen beginnt die Entspannung: kein Trubel, keine Hektik –
-            nur Zeit für Sie.
-          </p>
-        </div>
-      </div>
-    </section>
+    <!-- Das Gutshaus: Scroll-Fahrt von außen nach innen -->
+    <HouseTour />
 
     <!-- Über mich -->
     <section id="ueber-mich" class="section about">
@@ -253,101 +198,6 @@ import gutshaus from '../assets/gutshaus.webp';
     font-size: 15px;
   }
 
-  /* Behandlungen */
-  .categories {
-    display: grid;
-    gap: 20px;
-  }
-
-  @media (min-width: 760px) {
-    .categories {
-      grid-template-columns: repeat(2, 1fr);
-    }
-  }
-
-  .accent {
-    font-family: 'Allura', cursive;
-    font-size: 30px;
-    line-height: 1;
-    color: var(--sage-dark);
-    margin-bottom: 4px;
-    transform: rotate(-4deg);
-    transform-origin: left;
-  }
-
-  .extra {
-    margin-top: 28px;
-    text-align: center;
-    color: var(--muted);
-    font-family: var(--serif);
-    font-style: italic;
-    font-size: 21px;
-  }
-
-  .category {
-    background: #fff;
-    border: 1px solid var(--line);
-    border-radius: var(--radius);
-    padding: 28px 24px;
-  }
-
-  .category h3 {
-    font-size: 30px;
-  }
-
-  .cat-intro {
-    color: var(--muted);
-    font-size: 15px;
-    margin: 6px 0 20px;
-  }
-
-  .category ul {
-    list-style: none;
-    margin: 0;
-    padding: 0;
-  }
-
-  .category li {
-    padding: 11px 0;
-    border-top: 1px solid var(--line);
-  }
-
-  .t-head {
-    display: flex;
-    align-items: baseline;
-    gap: 8px;
-  }
-
-  .t-name {
-    font-weight: 500;
-    font-size: 16px;
-  }
-
-  .t-dots {
-    flex: 1;
-    min-width: 16px;
-    border-bottom: 1px dotted #c9bba6;
-    transform: translateY(-4px);
-  }
-
-  .t-price {
-    font-variant-numeric: tabular-nums;
-    white-space: nowrap;
-    color: var(--sage-dark);
-    font-weight: 500;
-    font-size: 15px;
-  }
-
-  .t-desc {
-    font-size: 14px;
-    color: var(--muted);
-    margin-top: 2px;
-  }
-
-  .t-dur {
-    white-space: nowrap;
-  }
-
   /* Über mich */
   .about {
     background: var(--cream);
@@ -458,22 +308,6 @@ import gutshaus from '../assets/gutshaus.webp';
       gap: 64px;
     }
   }
-  /* Behandlungen erscheinen nach ihrer Karte, Zeile für Zeile */
-  .category li {
-    opacity: 0;
-    transform: translateY(8px);
-    transition:
-      opacity 500ms var(--ease-out),
-      transform 500ms var(--ease-out);
-    transition-delay: calc(var(--delay, 0ms) + 200ms + var(--j, 0) * 60ms);
-  }
-
-  .category.is-visible li,
-  :global(.no-js) .category li {
-    opacity: 1;
-    transform: none;
-  }
-
   /* Kontaktkarte: leichtes Heranwachsen statt nur Hochschieben */
   .reveal-scale {
     transform: translateY(16px) scale(0.98);
@@ -496,58 +330,9 @@ import gutshaus from '../assets/gutshaus.webp';
   }
 
   @media (prefers-reduced-motion: reduce) {
-    .category li,
     .reveal-scale {
       transform: none;
       transition-property: opacity;
-    }
-  }
-  /* Das Gutshaus */
-  .house-grid {
-    display: grid;
-    gap: 40px;
-    align-items: center;
-  }
-
-  @media (min-width: 900px) {
-    .house-grid {
-      grid-template-columns: 1.15fr 1fr;
-      gap: 72px;
-    }
-  }
-
-  .house-photo {
-    margin: 0;
-    border-radius: var(--radius);
-    overflow: hidden;
-    aspect-ratio: 4 / 3;
-  }
-
-  .house-photo :global(img) {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    transform: scale(1.06);
-    transition: transform 1200ms var(--ease-out);
-    transition-delay: 100ms;
-  }
-
-  /* Das Foto setzt sich beim Aufdecken sanft zurecht */
-  .house-photo.is-visible :global(img),
-  :global(.no-js) .house-photo :global(img) {
-    transform: none;
-  }
-
-  .house-text p:not(.eyebrow) {
-    color: var(--muted);
-    margin-top: 16px;
-    max-width: 34em;
-  }
-
-  @media (prefers-reduced-motion: reduce) {
-    .house-photo :global(img) {
-      transform: none;
-      transition: none;
     }
   }
 </style>

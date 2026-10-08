@@ -18,7 +18,13 @@ export const studio = {
 };
 
 export type Treatment = { name: string; description?: string; duration?: string; price?: string };
-export type Category = { title: string; accent: string; intro: string; items: Treatment[] };
+export type Category = {
+  title: string;
+  accent: string;
+  icon: 'serum' | 'polish' | 'leaf' | 'stones';
+  intro: string;
+  items: Treatment[];
+};
 
 // Behandlungen laut Angebots-Flyer. Preise, Dauer und Beschreibungen können pro Behandlung
 // ergänzt werden, z. B. { name: 'Maniküre', duration: '45 Min.', price: '35 €' }.
@@ -28,6 +34,7 @@ export const categories: Category[] = [
   {
     title: 'Gesichtsbehandlungen',
     accent: 'Genießen',
+    icon: 'serum',
     intro: 'Pflege, die sich nach Ihrer Haut richtet.',
     items: list(
       'Basisbehandlung',
@@ -43,6 +50,7 @@ export const categories: Category[] = [
   {
     title: 'Augen & Hände',
     accent: 'Verwöhnen',
+    icon: 'polish',
     intro: 'Die kleinen Details, die viel ausmachen.',
     items: list(
       'Augenbrauenkorrektur',
@@ -56,12 +64,14 @@ export const categories: Category[] = [
   {
     title: 'Pflege & Packungen',
     accent: 'Wellness',
+    icon: 'leaf',
     intro: 'Intensive Pflege für Haut und Körper.',
     items: list('Algenmodellage', 'Vliesmasken', 'Dekolleté-Pflege', 'Enthaarungen'),
   },
   {
     title: 'Massagen',
     accent: 'Relaxen',
+    icon: 'stones',
     intro: 'Energie tanken – in der Ruhe des Gutshauses.',
     items: list(
       'Entspannungsmassage',

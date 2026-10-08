@@ -1,0 +1,415 @@
+---
+// Behandlungsübersicht als Reiter. Die aktive Markierung ist eine geclippte Kopie der Reiterleiste,
+// so wechseln Hintergrund und Schriftfarbe exakt gleichzeitig.
+import { studio, categories, extraNote } from '../data/site';
+
+const icons: Record<string, string[]> = {
+  serum: [
+    'M24 26 h16 v26 a4 4 0 0 1 -4 4 h-8 a4 4 0 0 1 -4 -4 Z',
+    'M28 26 v-6 h8 v6',
+    'M30 20 v-6 a2 2 0 0 1 4 0 v6',
+    'M28 40 h8',
+    'M50 34 c0 0 -4 5 -4 7.5 a4 4 0 0 0 8 0 c0 -2.5 -4 -7.5 -4 -7.5 Z',
+  ],
+  polish: [
+    'M27 6 h10 v18 h-10 Z',
+    'M20 30 a6 6 0 0 1 6 -6 h12 a6 6 0 0 1 6 6 v20 a6 6 0 0 1 -6 6 h-12 a6 6 0 0 1 -6 -6 Z',
+    'M27 33 v14',
+    'M50 14 l2 -4 l2 4 l4 2 l-4 2 l-2 4 l-2 -4 l-4 -2 Z',
+  ],
+  leaf: [
+    'M12 52 C12 28 28 12 54 10 C54 36 38 52 12 52 Z',
+    'M12 52 L42 22',
+    'M24 40 L23 30 M30 34 L29 24 M24 40 L34 41 M30 34 L40 35',
+  ],
+  stones: [
+    'M10 50 a22 7 0 1 0 44 0 a22 7 0 1 0 -44 0',
+    'M16 38 a16 6 0 1 0 32 0 a16 6 0 1 0 -32 0',
+    'M22 27 a10 4.5 0 1 0 20 0 a10 4.5 0 1 0 -20 0',
+    'M40 18 c2 -6 6 -9 12 -9 c0 5 -4 9 -12 9',
+  ],
+};
+
+const pad = (n: number) => String(n + 1).padStart(2, '0');
+---
+
+<div class="treatments" data-treatments>
+  <div class="tabs reveal" role="tablist" aria-label="Behandlungsbereiche" data-tablist>
+    {categories.map((c, i) => (
+      <button
+        class="tab"
+        role="tab"
+        id={`tab-${i}`}
+        aria-controls={`panel-${i}`}
+        aria-selected={i === 0 ? 'true' : 'false'}
+        tabindex={i === 0 ? 0 : -1}
+        data-tab={i}
+      >
+        <span class="tab-accent">{c.accent}</span>
+        <span class="tab-title">{c.title}</span>
+      </button>
+    ))}
+    <div class="tabs-active" aria-hidden="true" data-active-copy>
+      {categories.map((c) => (
+        <span class="tab">
+          <span class="tab-accent">{c.accent}</span>
+          <span class="tab-title">{c.title}</span>
+        </span>
+      ))}
+    </div>
+  </div>
+
+  <div class="panels reveal" style="--delay: 80ms">
+    {categories.map((c, i) => (
+      <section class="panel" role="tabpanel" id={`panel-${i}`} aria-labelledby={`tab-${i}`} data-panel={i}>
+        <div class="panel-intro">
+          <svg class="icon" viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            {icons[c.icon].map((d, k) => <path pathLength="1" d={d} style={`--i: ${k}`} />)}
+          </svg>
+          <p class="panel-accent" aria-hidden="true">{c.accent}</p>
+          <h3>{c.title}</h3>
+          <p class="panel-text">{c.intro}</p>
+          <p class="panel-count">{c.items.length} Behandlungen</p>
+        </div>
+        <ol class:list={['list', { two: c.items.length > 5 }]}>
+          {c.items.map((t, j) => (
+            <li style={`--n: ${j}`}>
+              <span class="num">{pad(j)}</span>
+              <span class="name">{t.name}</span>
+              {t.price && <span class="price">{t.price}</span>}
+            </li>
+          ))}
+        </ol>
+      </section>
+    ))}
+  </div>
+
+  <div class="after reveal">
+    <p class="extra">{extraNote}</p>
+    <a href={studio.phoneHref} class="btn btn-primary">Behandlung anfragen</a>
+  </div>
+</div>
+
+<script>
+  document.querySelectorAll<HTMLElement>('[data-treatments]').forEach((root) => {
+    const tablist = root.querySelector<HTMLElement>('[data-tablist]')!;
+    const tabs = [...root.querySelectorAll<HTMLButtonElement>('[data-tab]')];
+    const panels = [...root.querySelectorAll<HTMLElement>('[data-panel]')];
+    const copy = root.querySelector<HTMLElement>('[data-active-copy]')!;
+    let current = 0;
+
+    const clipTo = (i: number) => {
+      const t = tabs[i];
+      const w = tablist.clientWidth;
+      const h = tablist.clientHeight;
+      const top = t.offsetTop;
+      const left = t.offsetLeft;
+      copy.style.clipPath = `inset(${top}px ${w - left - t.offsetWidth}px ${h - top - t.offsetHeight}px ${left}px round 999px)`;
+    };
+
+    // Tastatur-Wechsel ohne Animation – wer mit Pfeiltasten springt, soll nicht warten.
+    const activate = (i: number, instant: boolean) => {
+      root.toggleAttribute('data-instant', instant);
+      tabs.forEach((t, j) => {
+        t.setAttribute('aria-selected', String(i === j));
+        t.tabIndex = i === j ? 0 : -1;
+      });
+      panels.forEach((p, j) => (p.hidden = i !== j));
+      clipTo(i);
+      current = i;
+    };
+
+    tabs.forEach((t, i) => {
+      t.addEventListener('click', (e) => {
+        if (i !== current) activate(i, (e as MouseEvent).detail === 0);
+      });
+      t.addEventListener('keydown', (e) => {
+        const dir = e.key === 'ArrowRight' ? 1 : e.key === 'ArrowLeft' ? -1 : 0;
+        if (!dir) return;
+        e.preventDefault();
+        const next = (current + dir + tabs.length) % tabs.length;
+        activate(next, true);
+        tabs[next].focus();
+      });
+    });
+
+    root.classList.add('is-ready');
+    activate(0, true);
+    new ResizeObserver(() => clipTo(current)).observe(tablist);
+  });
+</script>
+
+<style>
+  /* Reiterleiste */
+  .tabs {
+    position: relative;
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 6px;
+    padding: 6px;
+    background: #fff;
+    border: 1px solid var(--line);
+    border-radius: 28px;
+    margin-bottom: 20px;
+  }
+
+  @media (min-width: 760px) {
+    .tabs {
+      grid-template-columns: repeat(4, 1fr);
+      border-radius: 999px;
+    }
+  }
+
+  .tab {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 2px;
+    padding: 12px 8px 14px;
+    border: 0;
+    border-radius: 999px;
+    background: transparent;
+    color: var(--ink);
+    font: inherit;
+    cursor: pointer;
+    transition: transform 160ms var(--ease-out);
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  button.tab:active {
+    transform: scale(0.97);
+  }
+
+  button.tab:focus-visible {
+    outline: 2px solid var(--sage-dark);
+    outline-offset: 2px;
+  }
+
+  .tab-accent {
+    font-family: 'Allura', cursive;
+    font-size: 30px;
+    line-height: 1;
+    color: var(--sage-dark);
+  }
+
+  .tab-title {
+    font-size: 12px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--muted);
+    text-align: center;
+  }
+
+  /* Aktive Kopie: liegt deckungsgleich darüber und wird auf den aktiven Reiter zugeschnitten */
+  .tabs-active {
+    display: none;
+  }
+
+  .is-ready .tabs-active {
+    position: absolute;
+    inset: 0;
+    display: grid;
+    grid-template-columns: inherit;
+    gap: inherit;
+    padding: inherit;
+    pointer-events: none;
+    clip-path: inset(6px 75% 6px 6px round 999px);
+    transition: clip-path 250ms var(--ease-in-out);
+  }
+
+  [data-instant] .tabs-active {
+    transition: none;
+  }
+
+  /* Hintergrund auf der ganzen Kopie: der Zuschnitt allein formt die Pille, auch mitten im Gleiten */
+  .is-ready .tabs-active {
+    background: var(--sage-dark);
+    border-radius: inherit;
+  }
+
+  .tabs-active .tab {
+    cursor: default;
+  }
+
+  .tabs-active .tab-accent {
+    color: #fff;
+  }
+
+  .tabs-active .tab-title {
+    color: rgba(255, 255, 255, 0.78);
+  }
+
+  @media (hover: hover) and (pointer: fine) {
+    button.tab:hover .tab-title {
+      color: var(--ink);
+    }
+  }
+
+  /* Inhalt */
+  .panels {
+    display: grid;
+    gap: 20px;
+  }
+
+  .panel {
+    display: grid;
+    gap: 28px;
+    background: #fff;
+    border: 1px solid var(--line);
+    border-radius: calc(var(--radius) + 6px);
+    padding: clamp(24px, 4vw, 48px);
+  }
+
+  .panel[hidden] {
+    display: none;
+  }
+
+  @media (min-width: 900px) {
+    .panel {
+      grid-template-columns: 0.8fr 1.2fr;
+      gap: 56px;
+      min-height: 420px;
+    }
+  }
+
+  .panel-intro {
+    position: relative;
+  }
+
+  .icon {
+    width: 64px;
+    height: 64px;
+    color: var(--sage-dark);
+    margin-bottom: 16px;
+  }
+
+  /* Symbol zeichnet sich beim Öffnen eines Bereichs */
+  .icon path {
+    stroke-dasharray: 1;
+    stroke-dashoffset: 0;
+    transition: stroke-dashoffset 900ms var(--ease-in-out);
+    transition-delay: calc(var(--i, 0) * 80ms);
+  }
+
+  .is-ready .panel:not([hidden]) .icon path {
+    @starting-style {
+      stroke-dashoffset: 1;
+    }
+  }
+
+  .panel-accent {
+    font-family: 'Allura', cursive;
+    font-size: clamp(48px, 7vw, 72px);
+    line-height: 0.9;
+    color: var(--sage);
+    margin-bottom: 2px;
+  }
+
+  .panel h3 {
+    font-size: clamp(30px, 4vw, 40px);
+  }
+
+  .panel-text {
+    color: var(--muted);
+    margin-top: 10px;
+  }
+
+  .panel-count {
+    margin-top: 20px;
+    font-size: 12px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--sage-dark);
+  }
+
+  .list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    align-self: center;
+  }
+
+  @media (min-width: 640px) {
+    .list.two {
+      columns: 2;
+      column-gap: 32px;
+    }
+  }
+
+  .list li {
+    display: flex;
+    align-items: baseline;
+    gap: 14px;
+    padding: 14px 0;
+    border-bottom: 1px solid var(--line);
+    break-inside: avoid;
+    transition:
+      opacity 300ms var(--ease-out),
+      transform 300ms var(--ease-out);
+    transition-delay: calc(80ms + var(--n) * 40ms);
+  }
+
+  /* Zeilen erscheinen nacheinander, wenn ein Bereich geöffnet wird */
+  .is-ready .panel:not([hidden]) .list li {
+    @starting-style {
+      opacity: 0;
+      transform: translateY(8px);
+    }
+  }
+
+  [data-instant] .list li,
+  [data-instant] .icon path {
+    transition: none;
+  }
+
+  .num {
+    font-family: var(--serif);
+    font-style: italic;
+    font-size: 18px;
+    color: var(--sage-dark);
+    min-width: 1.6em;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .name {
+    font-size: 16px;
+    flex: 1;
+  }
+
+  .price {
+    color: var(--sage-dark);
+    font-weight: 500;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .after {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 16px;
+    margin-top: 32px;
+    text-align: center;
+  }
+
+  .extra {
+    color: var(--muted);
+    font-family: var(--serif);
+    font-style: italic;
+    font-size: 21px;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .is-ready .tabs-active,
+    .list li {
+      transition-property: opacity;
+    }
+    .icon path {
+      transition: none;
+    }
+    .is-ready .panel:not([hidden]) .list li {
+      @starting-style {
+        transform: none;
+      }
+    }
+  }
+</style>
