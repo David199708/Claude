@@ -1,49 +1,53 @@
 ---
-// Schlichte Linienzeichnung eines Gutshauses, die sich beim Laden einmal selbst zeichnet.
+// Linienzeichnung des echten Gutshauses (Hofstraße 2): drei Geschosse, acht Fensterachsen mit Läden,
+// Walmdach mit Gauben, Seitenflügel links, Eingang mit Treppe rechts. Zeichnet sich einmal selbst.
 // Alle Formen sind Pfade mit pathLength="1", damit die Strich-Animation überall gleich lang ist.
-const win = (x: number, y: number) => `M${x} ${y} h26 v36 h-26 Z`;
-const upper = [132, 182, 272, 322];
+const rows = [124, 166, 216];
+const axes = [172, 206, 240, 274, 308, 342, 376, 410];
+const wingAxes = [98, 128];
+const door = { axis: 376, row: 216 };
+const win = (c: number, y: number) => `M${c - 6} ${y} h12 v22 h-12 Z`;
+const shutters = (c: number, y: number) => `M${c - 13} ${y} h6 v22 h-6 Z M${c + 7} ${y} h6 v22 h-6 Z`;
+const main = rows.flatMap((y) => axes.map((c) => [c, y])).filter(([c, y]) => !(c === door.axis && y === door.row));
+const wing = [140, 176, 220].flatMap((y) => wingAxes.map((c) => [c, y]));
+const all = [...main, ...wing];
 ---
 
-<svg class="manor" viewBox="0 0 480 300" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-  <!-- Fassade -->
+<svg class="manor" viewBox="0 0 480 300" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+  <!-- Mauern und Boden -->
   <g style="--d: 0ms">
-    <path pathLength="1" d="M110 128 V262 H370 V128" />
-    <path pathLength="1" d="M104 262 H376" />
+    <path pathLength="1" d="M78 272 V132 M152 272 V112 M438 112 V272" />
+    <path pathLength="1" d="M20 272 H470" />
   </g>
-  <!-- Dach, Giebel, Schornsteine -->
+  <!-- Walmdach des Haupthauses und Dach des Seitenflügels -->
   <g style="--d: 250ms">
-    <path pathLength="1" d="M96 128 L240 64 L384 128" />
-    <path pathLength="1" d="M110 128 H370" />
-    <path pathLength="1" d="M206 128 L240 98 L274 128" />
-    <path pathLength="1" d="M234 116 a6 6 0 1 0 12 0 a6 6 0 1 0 -12 0" />
-    <path pathLength="1" d="M146 106 V84 H160 V100" />
-    <path pathLength="1" d="M320 100 V84 H334 V106" />
+    <path pathLength="1" d="M142 112 L168 88 H422 L448 112 Z" />
+    <path pathLength="1" d="M68 132 L90 116 H152 M68 132 H152" />
+  </g>
+  <!-- Gauben und Schornstein -->
+  <g style="--d: 450ms">
+    {[200, 260, 320, 380].map((c) => (
+      <path pathLength="1" d={`M${c - 7} 104 V95 h14 v9 M${c - 9} 95 L${c} 89 L${c + 9} 95`} />
+    ))}
+    <path pathLength="1" d="M186 88 V74 h11 v14" />
   </g>
   <!-- Fenster -->
   <g style="--d: 550ms">
-    {upper.map((x) => <path pathLength="1" d={win(x, 148)} />)}
-    <path pathLength="1" d={win(226, 148).replace('h26', 'h28').replace('h-26', 'h-28')} />
-    {upper.map((x) => <path pathLength="1" d={win(x, 208)} />)}
+    {all.map(([c, y]) => <path pathLength="1" d={win(c, y)} />)}
   </g>
-  <g style="--d: 750ms" opacity="0.5">
-    {upper.map((x) => <path pathLength="1" d={`M${x + 13} 148 V184`} />)}
-    {upper.map((x) => <path pathLength="1" d={`M${x + 13} 208 V244`} />)}
+  <!-- Fensterläden, etwas heller -->
+  <g style="--d: 700ms" opacity="0.6">
+    {all.map(([c, y]) => <path pathLength="1" d={shutters(c, y)} />)}
   </g>
-  <!-- Eingang -->
-  <g style="--d: 700ms">
-    <path pathLength="1" d="M222 262 V214 a18 18 0 0 1 36 0 V262" />
+  <!-- Eingang mit Treppe -->
+  <g style="--d: 800ms">
+    <path pathLength="1" d={`M${door.axis - 7} 262 V230 a7 7 0 0 1 14 0 V262`} />
+    <path pathLength="1" d={`M${door.axis - 22} 272 v-5 h44 v5 M${door.axis - 16} 267 v-5 h32 v5`} />
   </g>
-  <g style="--d: 900ms" opacity="0.5">
-    <path pathLength="1" d="M240 196 V262" />
-  </g>
-  <!-- Bäume und Weg -->
-  <g style="--d: 900ms" opacity="0.55">
-    <path pathLength="1" d="M40 262 V214 M40 222 c-22 -6 -26 -40 -6 -52 c-2 -22 26 -28 34 -10 c18 4 18 34 2 42 c-6 14 -20 18 -30 20" />
-    <path pathLength="1" d="M440 262 V206 M440 214 c-20 -4 -26 -36 -8 -48 c0 -24 28 -28 34 -8 c18 6 14 36 -2 42 c-6 12 -16 14 -24 14" />
-  </g>
-  <g style="--d: 1100ms" opacity="0.4">
-    <path pathLength="1" d="M214 262 L196 292 M266 262 L284 292" />
+  <!-- Baum rechts, Busch links -->
+  <g style="--d: 950ms" opacity="0.55">
+    <path pathLength="1" d="M446 272 V196 M446 204 c-18 -2 -24 -30 -8 -42 c-2 -22 24 -28 32 -10 c16 2 18 30 2 40 c-6 10 -18 14 -26 12" />
+    <path pathLength="1" d="M28 272 c-6 -16 10 -28 22 -20 c6 -14 26 -12 28 4 c14 0 18 16 8 16" />
   </g>
 </svg>
 
