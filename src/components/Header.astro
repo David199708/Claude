@@ -135,6 +135,21 @@ const hasLogo = fs.existsSync(path.join(process.cwd(), 'public/logo.png'));
     }
   }
 
+  /* Weniger Bewegung: Unterstreichung blendet ein statt zu wachsen */
+  @media (prefers-reduced-motion: reduce) {
+    nav a::after {
+      transform: none;
+      opacity: 0;
+      transition: opacity 200ms ease;
+    }
+    @media (hover: hover) and (pointer: fine) {
+      nav a:hover::after {
+        transform: none;
+        opacity: 1;
+      }
+    }
+  }
+
   .call {
     min-height: 40px;
     padding: 0 18px;

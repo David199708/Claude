@@ -81,8 +81,7 @@ const scenes = [
   const tour = document.querySelector<HTMLElement>('[data-tour]');
   const reduce = window.matchMedia('(prefers-reduced-motion: reduce)');
 
-  if (tour && !reduce.matches) {
-    tour.classList.add('is-live');
+  if (tour) {
     const frame = tour.querySelector<HTMLElement>('[data-frame]')!;
     const sticky = frame.parentElement!;
     const layers = [...tour.querySelectorAll<HTMLElement>('[data-layer]')].sort(
@@ -152,13 +151,31 @@ const scenes = [
     const schedule = () => {
       if (!frameReq) frameReq = requestAnimationFrame(render);
     };
-    window.addEventListener('scroll', schedule, { passive: true });
-    window.addEventListener('resize', () => {
+    const onResize = () => {
       measure();
       schedule();
-    });
-    measure();
-    render();
+    };
+
+    const start = () => {
+      tour.classList.add('is-live');
+      window.addEventListener('scroll', schedule, { passive: true });
+      window.addEventListener('resize', onResize);
+      measure();
+      render();
+    };
+
+    // „Bewegung reduzieren“ kann während des Besuchs umgeschaltet werden: dann zurück zur statischen Bildfolge
+    const stop = () => {
+      cancelAnimationFrame(frameReq);
+      frameReq = 0;
+      window.removeEventListener('scroll', schedule);
+      window.removeEventListener('resize', onResize);
+      tour.classList.remove('is-live');
+      [frame, ...layers, ...imgs, ...captions].forEach((el) => el.removeAttribute('style'));
+    };
+
+    if (!reduce.matches) start();
+    reduce.addEventListener('change', () => (reduce.matches ? stop() : start()));
   }
 </script>
 
@@ -280,10 +297,6 @@ const scenes = [
   .is-live .layer-2 {
     z-index: 3;
     opacity: 0;
-  }
-
-  .is-live .layer :global(img) {
-    will-change: transform;
   }
 
   .is-live .layer-0 :global(img) {

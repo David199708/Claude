@@ -168,18 +168,16 @@ a:focus-visible {
 .word {
   display: inline-block;
   opacity: 0;
-  transform: translateY(8px);
   filter: blur(4px);
+  /* Keine eigene Verschiebung: der umgebende .reveal-Block bewegt sich schon */
   transition:
     opacity 600ms var(--ease-out),
-    transform 600ms var(--ease-out),
     filter 600ms var(--ease-out);
   transition-delay: calc(var(--delay, 0ms) + 100ms + var(--w) * 50ms);
 }
 
 .is-visible .word {
   opacity: 1;
-  transform: none;
   filter: none;
 }
 
@@ -229,7 +227,6 @@ a:focus-visible {
     transition: opacity 300ms ease;
   }
   .word {
-    transform: none;
     filter: none;
     transition: opacity 300ms ease;
   }
