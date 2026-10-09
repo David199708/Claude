@@ -71,7 +71,7 @@ const hasLogo = fs.existsSync(path.join(process.cwd(), 'public/logo.png'));
     align-items: center;
     justify-content: space-between;
     gap: 24px;
-    height: 76px;
+    height: var(--header-h);
   }
 
   .logo {
@@ -82,7 +82,7 @@ const hasLogo = fs.existsSync(path.join(process.cwd(), 'public/logo.png'));
   }
 
   .logo-img {
-    height: 52px;
+    height: 44px;
     width: auto;
   }
 
@@ -151,7 +151,7 @@ const hasLogo = fs.existsSync(path.join(process.cwd(), 'public/logo.png'));
   }
 
   .call {
-    min-height: 40px;
+    min-height: 44px;
     padding: 0 18px;
     font-size: 14px;
   }
