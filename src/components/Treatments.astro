@@ -264,7 +264,7 @@ const pad = (n: number) => String(n + 1).padStart(2, '0');
     border-radius: var(--radius);
     overflow: hidden;
     aspect-ratio: 4 / 3;
-    transition: clip-path 400ms var(--ease-in-out);
+    transition: clip-path 300ms var(--ease-out);
     clip-path: inset(0 0 0 0 round var(--radius));
   }
 
@@ -272,7 +272,7 @@ const pad = (n: number) => String(n + 1).padStart(2, '0');
     width: 100%;
     height: 100%;
     object-fit: cover;
-    transition: transform 700ms var(--ease-out);
+    transition: transform 400ms var(--ease-out);
   }
 
   .is-ready .panel:not([hidden]) .photo {
@@ -409,9 +409,24 @@ const pad = (n: number) => String(n + 1).padStart(2, '0');
     .list li {
       transition-property: opacity;
     }
-    .photo,
+    /* Weniger Bewegung: Foto blendet weich ein, ohne Aufdecken und Zoom */
+    .photo {
+      clip-path: none;
+      transition: opacity 200ms ease;
+    }
     .photo :global(img) {
       transition: none;
+    }
+    .is-ready .panel:not([hidden]) .photo {
+      @starting-style {
+        clip-path: none;
+        opacity: 0;
+      }
+    }
+    .is-ready .panel:not([hidden]) .photo :global(img) {
+      @starting-style {
+        transform: none;
+      }
     }
     .is-ready .panel:not([hidden]) .list li,
     .is-ready .panel:not([hidden]) .panel-intro > :not(.photo) {

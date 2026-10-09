@@ -27,6 +27,8 @@ import band from '../assets/stock/band.jpg';
     };
     window.addEventListener('scroll', () => (req ||= requestAnimationFrame(update)), { passive: true });
     update();
+    // Eigene Grafikebene nur, solange der Streifen sichtbar ist – spart Speicher auf dem Handy
+    new IntersectionObserver(([e]) => (img.style.willChange = e.isIntersecting ? 'transform' : '')).observe(band);
   }
 </script>
 
