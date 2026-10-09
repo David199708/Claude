@@ -1,0 +1,620 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<title>Prototypen – Kosmetik im Gutshaus</title>
+<style>
+@font-face { font-family: 'Cormorant'; font-weight: 400; src: url({{CORM400}}) format('woff2'); }
+@font-face { font-family: 'Cormorant'; font-weight: 500; src: url({{CORM500}}) format('woff2'); }
+@font-face { font-family: 'Cormorant'; font-weight: 400; font-style: italic; src: url({{CORM400I}}) format('woff2'); }
+@font-face { font-family: 'Cormorant'; font-weight: 500; font-style: italic; src: url({{CORM500I}}) format('woff2'); }
+@font-face { font-family: 'Allura'; src: url({{ALLURA}}) format('woff2'); }
+
+:root {
+  --ease-out: cubic-bezier(0.23, 1, 0.32, 1);
+  --ease-in-out: cubic-bezier(0.77, 0, 0.175, 1);
+  --petrol: #2c6e6a;
+  --mint: #8fcfb0;
+}
+* { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; }
+body { margin: 0; -webkit-font-smoothing: antialiased; -webkit-tap-highlight-color: transparent; }
+img { display: block; max-width: 100%; }
+a { color: inherit; text-decoration: none; }
+h1, h2, h3, p, ul, ol { margin: 0; padding: 0; }
+ul, ol { list-style: none; }
+button { font: inherit; color: inherit; }
+:focus-visible { outline: 2px solid currentColor; outline-offset: 3px; }
+
+/* ============ 1 · MAGAZIN — Zeitschriften-Layout ============ */
+.v1 { background: #f6f1e9; color: #1f1a16; font: 17px/1.6 'Cormorant', Georgia, serif; min-height: 100vh; }
+.v1-wrap { max-width: 1180px; margin: 0 auto; padding: 0 clamp(18px, 4vw, 48px); }
+.v1-top { display: flex; align-items: center; justify-content: space-between; gap: 16px; padding: 20px 0; border-bottom: 1px solid #1f1a16; font: 500 12px/1 system-ui, sans-serif; letter-spacing: .18em; text-transform: uppercase; }
+.v1-top img { height: 40px; }
+.v1-top nav { display: none; gap: 28px; }
+@media (min-width: 820px) { .v1-top nav { display: flex; } }
+.v1-hero { display: grid; gap: 32px; padding: clamp(32px, 6vw, 72px) 0; border-bottom: 1px solid #1f1a16; }
+@media (min-width: 900px) { .v1-hero { grid-template-columns: 1.25fr 1fr; gap: 56px; align-items: end; } }
+.v1-kicker { font: 500 12px/1 system-ui, sans-serif; letter-spacing: .2em; text-transform: uppercase; color: var(--petrol); margin-bottom: 24px; }
+.v1-h1 { font-weight: 400; font-size: clamp(56px, 10vw, 136px); line-height: .9; letter-spacing: -.02em; }
+.v1-h1 .line { display: block; overflow: hidden; padding-bottom: .06em; }
+.v1-h1 .line > span { display: block; animation: v1-rise 900ms var(--ease-out) both; animation-delay: calc(150ms + var(--i) * 90ms); }
+.v1-h1 em { color: var(--petrol); }
+@keyframes v1-rise { from { transform: translateY(105%); } }
+.v1-photo { margin: 0; }
+.v1-photo img { width: 100%; aspect-ratio: 4 / 5; object-fit: cover; animation: v1-reveal 1100ms var(--ease-in-out) 200ms both; }
+@keyframes v1-reveal { from { clip-path: inset(100% 0 0 0); } to { clip-path: inset(0 0 0 0); } }
+.v1-photo figcaption, .v1-pair figcaption { font: italic 15px/1.4 'Cormorant', serif; margin-top: 10px; color: #6b6158; }
+.v1-intro { display: grid; gap: 24px; padding: clamp(40px, 6vw, 72px) 0; border-bottom: 1px solid #1f1a16; }
+@media (min-width: 900px) { .v1-intro { grid-template-columns: 1fr 2fr; } }
+.v1-label { font: 500 12px/1.4 system-ui, sans-serif; letter-spacing: .2em; text-transform: uppercase; }
+.v1-intro p { font-size: clamp(22px, 2.6vw, 30px); line-height: 1.35; columns: 1; }
+.v1-intro p:last-child::first-letter { float: left; font-size: 3.4em; line-height: .8; padding: .08em .1em 0 0; color: var(--petrol); }
+.v1-index { padding: clamp(40px, 6vw, 72px) 0; border-bottom: 1px solid #1f1a16; }
+.v1-index h2 { font-weight: 400; font-style: italic; font-size: clamp(40px, 6vw, 72px); line-height: 1; margin: 12px 0 32px; }
+.v1-row { display: grid; grid-template-columns: 56px 1fr; gap: 8px 20px; padding: 22px 0; border-top: 1px solid rgba(31, 26, 22, .25); }
+@media (min-width: 900px) { .v1-row { grid-template-columns: 90px 1fr 2fr; align-items: baseline; } }
+.v1-num { font-size: 44px; line-height: 1; color: var(--petrol); font-style: italic; }
+.v1-row h3 { font-weight: 500; font-size: 28px; line-height: 1.1; }
+.v1-row h3 small { display: block; font: 500 11px/1 system-ui, sans-serif; letter-spacing: .2em; text-transform: uppercase; color: #6b6158; margin-top: 8px; }
+.v1-row p { grid-column: 2 / -1; font-size: 20px; color: #3d352e; }
+@media (min-width: 900px) { .v1-row p { grid-column: auto; } }
+.v1-pair { display: grid; gap: 24px; padding: clamp(40px, 6vw, 72px) 0; border-bottom: 1px solid #1f1a16; }
+@media (min-width: 760px) { .v1-pair { grid-template-columns: 1fr 1fr; } }
+.v1-pair img { width: 100%; aspect-ratio: 4 / 3; object-fit: cover; }
+.v1-quote { padding: clamp(48px, 8vw, 96px) 0; text-align: center; border-bottom: 1px solid #1f1a16; }
+.v1-quote blockquote { margin: 0 auto; max-width: 820px; font-style: italic; font-size: clamp(30px, 4.4vw, 52px); line-height: 1.15; }
+.v1-quote cite { display: block; margin-top: 20px; font: normal 500 12px/1 system-ui, sans-serif; letter-spacing: .2em; text-transform: uppercase; }
+.v1-contact { display: grid; gap: 24px; padding: clamp(48px, 8vw, 96px) 0; }
+@media (min-width: 900px) { .v1-contact { grid-template-columns: 1fr 1fr; align-items: end; } }
+.v1-phone { font-size: clamp(48px, 8vw, 104px); line-height: 1; color: var(--petrol); font-variant-numeric: lining-nums; transition: color 200ms ease; }
+.v1-contact address { font-style: normal; font-size: 22px; line-height: 1.5; }
+.v1-link { font: 500 13px/1 system-ui, sans-serif; letter-spacing: .14em; text-transform: uppercase; border-bottom: 1px solid currentColor; padding-bottom: 4px; display: inline-block; margin-top: 16px; }
+@media (hover: hover) and (pointer: fine) { .v1-phone:hover { color: #1f1a16; } .v1-link:hover { color: var(--petrol); } }
+@media (prefers-reduced-motion: reduce) {
+  .v1-h1 .line > span { animation: fade 400ms ease both; }
+  .v1-photo img { animation: fade 400ms ease both; }
+}
+
+/* ============ 2 · KOMPAKT — App-artig, Aufgabe zuerst ============ */
+.v2 { background: #f2f4f3; color: #18211f; font: 16px/1.5 system-ui, -apple-system, 'Segoe UI', sans-serif; min-height: 100vh; padding-bottom: calc(96px + env(safe-area-inset-bottom)); }
+.v2-wrap { max-width: 720px; margin: 0 auto; padding: 0 16px; }
+.v2-top { display: flex; align-items: center; justify-content: space-between; padding: 72px 0 12px; }
+.v2-top img { height: 36px; }
+.v2-status { font-size: 13px; color: #4b5a57; display: flex; align-items: center; gap: 6px; }
+.v2-status::before { content: ''; width: 8px; height: 8px; border-radius: 50%; background: #3aa17e; }
+.v2-card { background: #fff; border-radius: 20px; padding: 16px; box-shadow: 0 1px 2px rgba(0,0,0,.05); }
+.v2-hero { display: grid; grid-template-columns: 96px 1fr; gap: 14px; align-items: center; margin-top: 8px; }
+.v2-hero img { width: 96px; height: 96px; border-radius: 14px; object-fit: cover; }
+.v2-hero h1 { font-size: 22px; line-height: 1.2; letter-spacing: -.01em; }
+.v2-hero p { font-size: 14px; color: #4b5a57; margin-top: 2px; }
+.v2-actions { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-top: 12px; }
+.v2-action { display: flex; flex-direction: column; align-items: center; gap: 6px; padding: 12px 6px; border-radius: 14px; background: #e7f1ee; color: var(--petrol); font-size: 13px; font-weight: 600; border: 0; cursor: pointer; transition: transform 120ms var(--ease-out), background-color 150ms ease; }
+.v2-action svg { width: 22px; height: 22px; }
+.v2-action:active, .v2-chip:active, .v2-bar a:active { transform: scale(0.97); }
+@media (hover: hover) and (pointer: fine) { .v2-action:hover { background: #d9ebe5; } }
+.v2-h2 { font-size: 13px; font-weight: 600; letter-spacing: .06em; text-transform: uppercase; color: #4b5a57; margin: 28px 4px 10px; }
+.v2-search { width: 100%; height: 48px; border-radius: 14px; border: 1px solid #d5dcda; background: #fff; padding: 0 16px 0 44px; font: 16px system-ui, sans-serif; color: inherit; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='20' height='20' fill='none' stroke='%234b5a57' stroke-width='2'%3E%3Ccircle cx='9' cy='9' r='6'/%3E%3Cpath d='m14 14 4 4'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: 14px center; }
+.v2-search:focus { outline: 2px solid var(--petrol); outline-offset: 1px; }
+.v2-chips { display: flex; gap: 8px; overflow-x: auto; padding: 12px 0 4px; scrollbar-width: none; }
+.v2-chips::-webkit-scrollbar { display: none; }
+.v2-chip { flex: none; height: 36px; padding: 0 14px; border-radius: 999px; border: 1px solid #d5dcda; background: #fff; font-size: 14px; cursor: pointer; transition: background-color 150ms ease, color 150ms ease, border-color 150ms ease, transform 120ms var(--ease-out); }
+.v2-chip[aria-pressed="true"] { background: var(--petrol); border-color: var(--petrol); color: #fff; }
+.v2-count { font-size: 13px; color: #4b5a57; margin: 10px 4px; }
+.v2-list { background: #fff; border-radius: 20px; overflow: hidden; }
+.v2-list li { display: flex; justify-content: space-between; gap: 12px; align-items: center; padding: 14px 16px; border-top: 1px solid #eef1f0; }
+.v2-list li:first-child { border-top: 0; }
+.v2-list .cat { font-size: 12px; color: var(--petrol); background: #e7f1ee; padding: 3px 8px; border-radius: 999px; white-space: nowrap; }
+.v2-empty { padding: 24px 16px; text-align: center; color: #4b5a57; }
+.v2-info { display: grid; gap: 8px; }
+@media (min-width: 560px) { .v2-info { grid-template-columns: repeat(3, 1fr); } }
+.v2-info .v2-card b { display: block; font-size: 13px; color: #4b5a57; font-weight: 500; margin-bottom: 4px; }
+.v2-photos { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
+.v2-photos img { width: 100%; aspect-ratio: 1; object-fit: cover; border-radius: 14px; }
+.v2-bar { position: fixed; left: 0; right: 0; bottom: 0; z-index: 5; padding: 12px 16px calc(12px + env(safe-area-inset-bottom)); background: rgba(255,255,255,.86); -webkit-backdrop-filter: blur(16px) saturate(1.6); backdrop-filter: blur(16px) saturate(1.6); border-top: 1px solid #e3e8e6; }
+.v2-bar .v2-wrap { display: grid; grid-template-columns: 1fr auto; gap: 8px; padding: 0; }
+.v2-bar a { display: flex; align-items: center; justify-content: center; height: 52px; border-radius: 16px; font-weight: 600; transition: transform 120ms var(--ease-out); }
+.v2-bar .call { background: var(--petrol); color: #fff; }
+.v2-bar .route { background: #e7f1ee; color: var(--petrol); padding: 0 20px; }
+@media (prefers-reduced-motion: reduce) { .v2-action:active, .v2-chip:active, .v2-bar a:active { transform: none; } }
+
+/* ============ 3 · VERSPIELT — Pastell, rund, aufklappbar ============ */
+.v3 { --peach: #f4cdb2; --mintbg: #e3f3ea; background: #fffaf5; color: #2b2623; font: 17px/1.55 ui-rounded, 'SF Pro Rounded', system-ui, sans-serif; min-height: 100vh; overflow: hidden; }
+.v3-wrap { max-width: 1040px; margin: 0 auto; padding: 0 20px; position: relative; }
+.v3-top { position: relative; z-index: 1; display: flex; justify-content: space-between; align-items: center; padding: 80px 0 0; }
+.v3-top img { height: 44px; }
+.v3-hero { position: relative; display: grid; gap: 32px; align-items: center; padding: 40px 0 64px; }
+@media (min-width: 860px) { .v3-hero { grid-template-columns: 1.1fr 1fr; } }
+.v3-blob { position: absolute; border-radius: 50%; z-index: 0; }
+.v3-blob.a { width: 420px; height: 420px; background: var(--mintbg); right: -120px; top: -40px; }
+.v3-blob.b { width: 220px; height: 220px; background: #fde6d6; left: -80px; bottom: 0; }
+.v3-hero > * { position: relative; z-index: 1; }
+.v3-script { font-family: 'Allura', cursive; font-size: clamp(50px, 12.5vw, 120px); line-height: .9; color: var(--petrol); }
+.v3-hero h1 { font-size: clamp(26px, 3.4vw, 36px); line-height: 1.2; font-weight: 700; margin-top: 10px; }
+.v3-hero p:not(.v3-script) { color: #6a5f58; margin-top: 12px; max-width: 30em; }
+.v3-btns { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 24px; }
+.v3-btn { display: inline-flex; align-items: center; height: 52px; padding: 0 24px; border-radius: 999px; font-weight: 700; border: 0; cursor: pointer; transition: transform 160ms var(--ease-out), box-shadow 200ms ease; }
+.v3-btn.primary { background: var(--petrol); color: #fff; box-shadow: 0 6px 0 #1d4d4a; }
+.v3-btn.soft { background: var(--peach); color: #5a3a28; box-shadow: 0 6px 0 #dcae8f; }
+.v3-btn:active { transform: translateY(4px); box-shadow: 0 2px 0 rgba(0,0,0,.15); }
+.v3-medal { justify-self: center; width: min(78vw, 380px); aspect-ratio: 1; border-radius: 50%; padding: 14px; background: var(--peach); animation: v3-pop 600ms var(--ease-out) 150ms both; }
+.v3-medal img { width: 100%; height: 100%; object-fit: cover; border-radius: 50%; border: 8px solid var(--mint); }
+@keyframes v3-pop { from { opacity: 0; transform: scale(.94) rotate(-4deg); } }
+.v3-h2 { font-family: 'Allura', cursive; font-weight: 400; font-size: clamp(52px, 8vw, 84px); line-height: 1; color: var(--petrol); text-align: center; }
+.v3-sub { text-align: center; color: #6a5f58; margin: 6px 0 32px; }
+.v3-cards { display: grid; gap: 18px; align-items: start; }
+@media (min-width: 760px) { .v3-cards { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+.v3-card { border-radius: 28px; padding: 6px; transform: rotate(var(--r)); animation: v3-in 400ms var(--ease-out) both; animation-delay: calc(250ms + var(--i) * 60ms); }
+@keyframes v3-in { from { opacity: 0; transform: rotate(var(--r)) translateY(12px) scale(.97); } }
+.v3-card:nth-child(1) { background: var(--mintbg); --r: -1.2deg; }
+.v3-card:nth-child(2) { background: #fde6d6; --r: 1deg; }
+.v3-card:nth-child(3) { background: #fdf0c9; --r: .8deg; }
+.v3-card:nth-child(4) { background: #e6e8fb; --r: -.9deg; }
+.v3-toggle { width: 100%; display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 20px 20px; border: 0; background: transparent; text-align: left; cursor: pointer; border-radius: 22px; }
+.v3-toggle .acc { font-family: 'Allura', cursive; font-size: 40px; line-height: 1; color: var(--petrol); }
+.v3-toggle .ttl { display: block; font-weight: 700; font-size: 18px; margin-top: 2px; }
+.v3-plus { flex: none; width: 40px; height: 40px; border-radius: 50%; background: #fff; display: grid; place-items: center; font-size: 22px; transition: transform 250ms var(--ease-out); }
+.v3-toggle[aria-expanded="true"] .v3-plus { transform: rotate(45deg); }
+.v3-panel { display: grid; grid-template-rows: 0fr; transition: grid-template-rows 250ms var(--ease-out); }
+.v3-toggle[aria-expanded="true"] + .v3-panel { grid-template-rows: 1fr; }
+.v3-panel > div { overflow: hidden; }
+.v3-panel ul { display: flex; flex-wrap: wrap; gap: 8px; padding: 0 20px 22px; }
+.v3-panel li { background: #fff; border-radius: 999px; padding: 6px 14px; font-size: 15px; }
+@media (hover: hover) and (pointer: fine) { .v3-toggle:hover .v3-plus { transform: scale(1.06); } .v3-toggle[aria-expanded="true"]:hover .v3-plus { transform: rotate(45deg) scale(1.06); } }
+.v3-rooms { display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; margin: 72px 0; }
+.v3-rooms img { width: 100%; aspect-ratio: 1; object-fit: cover; border-radius: 32px; }
+.v3-rooms figure { margin: 0; }
+.v3-rooms figure:nth-child(2) { margin-top: 40px; }
+.v3-rooms figcaption { font-family: 'Allura', cursive; font-size: 32px; color: var(--petrol); text-align: center; margin-top: 6px; }
+.v3-contact { text-align: center; background: var(--petrol); color: #fff; border-radius: 40px; padding: 48px 24px; margin-bottom: 48px; }
+.v3-contact .v3-script { color: var(--mint); font-size: clamp(52px, 8vw, 84px); }
+.v3-contact a.phone { display: inline-block; font-size: clamp(30px, 5vw, 44px); font-weight: 800; margin: 12px 0; }
+@media (prefers-reduced-motion: reduce) {
+  .v3-medal, .v3-card { animation: fade 400ms ease both; }
+  .v3-panel, .v3-plus { transition: none; }
+  .v3-btn:active { transform: none; }
+}
+
+/* ============ 4 · ABENDRUHE — dunkel, Gold, langsam ============ */
+.v4 { --gold: #c9a96e; --night: #0e2524; background: var(--night); color: #e9e4da; font: 17px/1.7 'Cormorant', Georgia, serif; min-height: 100vh; }
+.v4-wrap { max-width: 1080px; margin: 0 auto; padding: 0 clamp(20px, 5vw, 56px); }
+.v4-hero { position: relative; min-height: 100svh; display: grid; place-items: center; text-align: center; overflow: hidden; }
+.v4-bg { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; animation: v4-settle 1800ms var(--ease-out) both; }
+@keyframes v4-settle { from { opacity: 0; transform: scale(1.06); } }
+.v4-hero::after { content: ''; position: absolute; inset: 0; background: radial-gradient(ellipse at center, rgba(14,37,36,.55), rgba(14,37,36,.92) 75%); }
+.v4-hero-text { position: relative; z-index: 1; padding: 0 20px; }
+.v4-hero-text > * { animation: v4-up 1200ms var(--ease-out) both; animation-delay: calc(500ms + var(--i) * 150ms); }
+@keyframes v4-up { from { opacity: 0; transform: translateY(14px); } }
+.v4-caps { font: 500 12px/1 system-ui, sans-serif; letter-spacing: .4em; text-transform: uppercase; color: var(--gold); }
+.v4-hero h1 { font-weight: 400; font-size: clamp(42px, 11vw, 140px); line-height: 1; letter-spacing: -.01em; margin: 20px 0 12px; color: #fff; }
+.v4-hero p { font-style: italic; font-size: clamp(22px, 3vw, 30px); color: #d8cfbf; }
+.v4-rule { width: 64px; height: 1px; background: var(--gold); margin: 28px auto; }
+.v4-cta { display: inline-block; border: 1px solid var(--gold); color: var(--gold); padding: 14px 32px; font: 500 12px/1 system-ui, sans-serif; letter-spacing: .3em; text-transform: uppercase; transition: background-color 300ms ease, color 300ms ease, transform 160ms var(--ease-out); }
+.v4-cta:active { transform: scale(0.97); }
+@media (hover: hover) and (pointer: fine) { .v4-cta:hover { background: var(--gold); color: var(--night); } }
+.v4-logo { position: absolute; top: 72px; left: 50%; transform: translateX(-50%); z-index: 1; height: 44px; filter: invert(1) brightness(1.6) sepia(.4); opacity: .85; }
+.v4-sec { padding: clamp(72px, 10vw, 128px) 0; border-top: 1px solid rgba(201,169,110,.2); }
+.v4-h2 { font-weight: 400; font-style: italic; font-size: clamp(40px, 6vw, 68px); line-height: 1.05; text-align: center; color: #fff; }
+.v4-intro { text-align: center; max-width: 640px; margin: 20px auto 56px; font-size: 21px; color: #cfc6b6; }
+.v4-menu { display: grid; gap: 48px 64px; }
+@media (min-width: 820px) { .v4-menu { grid-template-columns: 1fr 1fr; } }
+.v4-menu h3 { font: 500 12px/1 system-ui, sans-serif; letter-spacing: .3em; text-transform: uppercase; color: var(--gold); padding-bottom: 14px; border-bottom: 1px solid rgba(201,169,110,.35); }
+.v4-menu h3 span { display: block; font: italic 400 28px/1.2 'Cormorant', serif; letter-spacing: 0; text-transform: none; color: #fff; margin-top: 8px; }
+.v4-menu li { font-size: 20px; padding: 10px 0; border-bottom: 1px solid rgba(233,228,218,.08); }
+.v4-gallery { display: grid; gap: 20px; }
+@media (min-width: 760px) { .v4-gallery { grid-template-columns: 1.4fr 1fr; } }
+.v4-gallery figure { margin: 0; overflow: hidden; }
+.v4-gallery img { width: 100%; height: 100%; aspect-ratio: 4 / 3; object-fit: cover; filter: saturate(.85); transition: transform 1200ms var(--ease-out), filter 600ms ease; }
+@media (hover: hover) and (pointer: fine) { .v4-gallery figure:hover img { transform: scale(1.03); filter: saturate(1); } }
+.v4-gallery figcaption { font-style: italic; color: #b9ae9c; margin-top: 10px; }
+.v4-quote { text-align: center; font-style: italic; font-size: clamp(28px, 4vw, 44px); line-height: 1.25; color: #fff; max-width: 820px; margin: 0 auto; }
+.v4-quote + p { text-align: center; margin-top: 16px; font: 500 12px/1 system-ui, sans-serif; letter-spacing: .3em; text-transform: uppercase; color: var(--gold); }
+.v4-contact { text-align: center; }
+.v4-contact .phone { display: inline-block; font-size: clamp(44px, 7vw, 80px); color: var(--gold); line-height: 1.1; margin: 16px 0; }
+.v4-contact address { font-style: normal; color: #cfc6b6; font-size: 20px; }
+.v4-contact .route { display: inline-block; margin-top: 16px; color: var(--gold); border-bottom: 1px solid rgba(201,169,110,.5); }
+@media (prefers-reduced-motion: reduce) {
+  .v4-bg { animation: fade 600ms ease both; }
+  .v4-hero-text > * { animation: fade 600ms ease both; }
+  .v4-gallery img { transition: filter 600ms ease; }
+  @media (hover: hover) and (pointer: fine) { .v4-gallery figure:hover img { transform: none; } }
+}
+
+@keyframes fade { from { opacity: 0; } }
+
+/* ============ Picker (Harness, nicht Teil des Designs) ============ */
+.proto-picker {
+  position: fixed;
+  bottom: 24px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 2147483647;
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  padding: 4px;
+  border-radius: 999px;
+  background: rgba(10, 10, 10, 0.82);
+  -webkit-backdrop-filter: blur(12px) saturate(1.4);
+  backdrop-filter: blur(12px) saturate(1.4);
+  box-shadow:
+    0 0 0 1px rgba(255, 255, 255, 0.08) inset,
+    0 8px 24px rgba(0, 0, 0, 0.24),
+    0 2px 6px rgba(0, 0, 0, 0.12);
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  font-size: 13px;
+  line-height: 1;
+  -webkit-font-smoothing: antialiased;
+  user-select: none;
+  -webkit-user-select: none;
+}
+.proto-picker-highlight {
+  position: absolute;
+  top: 4px;
+  left: 0;
+  height: 28px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.12);
+  will-change: transform;
+}
+.proto-picker[data-ready] .proto-picker-highlight {
+  transition:
+    transform 250ms cubic-bezier(0.23, 1, 0.32, 1),
+    width 250ms cubic-bezier(0.23, 1, 0.32, 1);
+}
+@media (prefers-reduced-motion: reduce) {
+  .proto-picker[data-ready] .proto-picker-highlight { transition: none; }
+}
+.proto-picker-item {
+  position: relative;
+  display: flex;
+  align-items: center;
+  height: 28px;
+  padding: 0 12px;
+  border: 0;
+  border-radius: 999px;
+  background: transparent;
+  color: rgba(255, 255, 255, 0.55);
+  font: inherit;
+  cursor: pointer;
+  transition: color 150ms ease-out;
+}
+.proto-picker-item:hover { color: rgba(255, 255, 255, 0.85); }
+.proto-picker-item:active { transform: scale(0.97); }
+.proto-picker-item:focus-visible { outline: 2px solid rgba(255, 255, 255, 0.4); outline-offset: 2px; }
+.proto-picker-item[data-active] { color: #fff; }
+.proto-picker-divider { width: 1px; height: 16px; margin: 0 4px; background: rgba(255, 255, 255, 0.12); }
+.proto-picker-replay { padding: 0 10px; font-size: 14px; }
+.proto-picker[data-position="top"] { bottom: auto; top: 24px; }
+</style>
+</head>
+<body>
+<div id="stage"></div>
+
+<!-- "Kompakt" belegt den unteren Bildschirmrand mit der Anruf-Leiste, daher sitzt der Picker oben -->
+<nav class="proto-picker" aria-label="Prototype variants" data-position="top">
+  <span class="proto-picker-highlight" aria-hidden="true"></span>
+  <button class="proto-picker-item" data-active aria-current="true">Magazin</button>
+  <button class="proto-picker-item">Kompakt</button>
+  <button class="proto-picker-item">Verspielt</button>
+  <button class="proto-picker-item">Abendruhe</button>
+  <span class="proto-picker-divider" aria-hidden="true"></span>
+  <button class="proto-picker-item proto-picker-replay" aria-label="Replay animation (R)">↻</button>
+</nav>
+
+<script>
+const IMG = { house: '{{HOUSE}}', room: '{{ROOM}}', corner: '{{CORNER}}', logo: '{{LOGO}}' };
+const S = {
+  name: 'Kosmetik im Gutshaus', owner: 'Barbara Schäfer', slogan: 'Wohlfühlstunden für Körper und Sinne',
+  street: 'Hofstraße 2', zip: '63589', city: 'Linsengericht-Altenhaßlau', phone: '06051 617555',
+  tel: 'tel:+496051617555', hours: 'Termine nach Vereinbarung', brand: 'BABOR',
+  maps: 'https://www.google.com/maps/search/?api=1&query=Kosmetik+im+Gutshaus+Hofstra%C3%9Fe+2+63589+Linsengericht',
+};
+const CATS = [
+  { key: 'gesicht', accent: 'Genießen', title: 'Gesichtsbehandlungen', short: 'Gesicht', intro: 'Pflege, die sich nach Ihrer Haut richtet.',
+    items: ['Basisbehandlung', 'Reinigungsbehandlung', 'Wohlfühlbehandlung', 'Exklusivbehandlung', 'Anti-Age-Behandlung', 'Herrenbehandlung', 'Hot-Stone-Gesichtsbehandlung', 'Ultraschall'] },
+  { key: 'haende', accent: 'Verwöhnen', title: 'Augen & Hände', short: 'Augen & Hände', intro: 'Die kleinen Details, die viel ausmachen.',
+    items: ['Augenbrauenkorrektur', 'Brauenfärben', 'Wimpernfärben', 'Maniküre', 'Handpackung', 'Handmassage'] },
+  { key: 'pflege', accent: 'Wellness', title: 'Pflege & Packungen', short: 'Pflege', intro: 'Intensive Pflege für Haut und Körper.',
+    items: ['Algenmodellage', 'Vliesmasken', 'Dekolleté-Pflege', 'Enthaarungen'] },
+  { key: 'massage', accent: 'Relaxen', title: 'Massagen', short: 'Massagen', intro: 'Energie tanken – in der Ruhe des Gutshauses.',
+    items: ['Entspannungsmassage', 'Ayurvedische Rückenmassage', 'Ayurvedische Hot-Stone-Rückenmassage'] },
+];
+const QUOTE = 'Bei mir gibt es keine Fließbandtermine. Jede Behandlung beginnt mit einem Gespräch – und mit der Zeit, die Ihre Haut braucht.';
+const pad = (n) => String(n + 1).padStart(2, '0');
+
+const variants = [
+  // 1 · Magazin
+  () => `
+  <div class="v1">
+    <div class="v1-wrap">
+      <header class="v1-top" style="margin-top:56px">
+        <img src="${IMG.logo}" alt="${S.name}">
+        <nav><a href="#v1-programm">Programm</a><a href="#v1-raeume">Räume</a><a href="#v1-kontakt">Kontakt</a></nav>
+        <a href="${S.tel}">${S.phone}</a>
+      </header>
+      <section class="v1-hero">
+        <div>
+          <p class="v1-kicker">Kosmetikstudio · Altenhaßlau</p>
+          <h1 class="v1-h1">
+            <span class="line"><span style="--i:0">Wohlfühl-</span></span>
+            <span class="line"><span style="--i:1">stunden</span></span>
+            <span class="line"><span style="--i:2"><em>für Körper</em></span></span>
+            <span class="line"><span style="--i:3"><em>&amp; Sinne.</em></span></span>
+          </h1>
+        </div>
+        <figure class="v1-photo">
+          <img src="${IMG.house}" alt="Das Gutshaus in der Hofstraße">
+          <figcaption>Das Gutshaus in der ${S.street} – roter Sandstein, grüne Läden.</figcaption>
+        </figure>
+      </section>
+      <section class="v1-intro">
+        <p class="v1-label">Willkommen</p>
+        <p>Im Gutshaus in der ${S.street} erwartet Sie ein Komplettprogramm rund um die Schönheit – mit hochwertiger Pflege von ${S.brand}, viel Ruhe und einer Gastgeberin, die sich Zeit nimmt.</p>
+      </section>
+      <section class="v1-index" id="v1-programm">
+        <p class="v1-label">Inhalt</p>
+        <h2>Das Programm</h2>
+        ${CATS.map((c, i) => `
+          <div class="v1-row">
+            <span class="v1-num">${pad(i)}</span>
+            <h3>${c.title}<small>${c.accent}</small></h3>
+            <p>${c.items.join(' · ')}</p>
+          </div>`).join('')}
+        <div class="v1-row"><span class="v1-num">05</span><h3>Wechselnd<small>Neu</small></h3><p>Trendbehandlungen – fragen Sie gerne nach.</p></div>
+      </section>
+      <section class="v1-pair" id="v1-raeume">
+        <figure><img src="${IMG.room}" alt="Der Behandlungsraum"><figcaption>Der Behandlungsraum, hell und warm.</figcaption></figure>
+        <figure><img src="${IMG.corner}" alt="Die Sitzecke"><figcaption>Die Sitzecke – hier beginnt jede Behandlung.</figcaption></figure>
+      </section>
+      <section class="v1-quote">
+        <blockquote>„${QUOTE}“</blockquote>
+        <cite>${S.owner}, Inhaberin</cite>
+      </section>
+      <section class="v1-contact" id="v1-kontakt">
+        <div>
+          <p class="v1-label">Termin · ${S.hours}</p>
+          <a class="v1-phone" href="${S.tel}">${S.phone}</a>
+        </div>
+        <div>
+          <address>${S.name}<br>${S.street}<br>${S.zip} ${S.city}</address>
+          <a class="v1-link" href="${S.maps}" target="_blank" rel="noopener">Route planen</a>
+        </div>
+      </section>
+    </div>
+  </div>`,
+
+  // 2 · Kompakt
+  Object.assign(() => `
+  <div class="v2">
+    <div class="v2-wrap">
+      <header class="v2-top">
+        <img src="${IMG.logo}" alt="${S.name}">
+        <span class="v2-status">${S.hours}</span>
+      </header>
+      <div class="v2-card">
+        <div class="v2-hero">
+          <img src="${IMG.house}" alt="Das Gutshaus">
+          <div>
+            <h1>${S.slogan}</h1>
+            <p>${S.street}, ${S.city}</p>
+          </div>
+        </div>
+        <div class="v2-actions">
+          <a class="v2-action" href="${S.tel}"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.9v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3.1 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 2.1 4.2 2 2 0 0 1 4.1 2h3a2 2 0 0 1 2 1.7c.1.9.4 1.8.7 2.7a2 2 0 0 1-.5 2.1L8 9.8a16 16 0 0 0 6 6l1.3-1.3a2 2 0 0 1 2.1-.4c.9.3 1.8.6 2.7.7a2 2 0 0 1 1.7 2z"/></svg>Anrufen</a>
+          <a class="v2-action" href="${S.maps}" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 21s-7-6.2-7-11a7 7 0 0 1 14 0c0 4.8-7 11-7 11z"/><circle cx="12" cy="10" r="2.5"/></svg>Route</a>
+          <button class="v2-action" data-jump><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 6h16M4 12h16M4 18h10"/></svg>Angebot</button>
+        </div>
+      </div>
+
+      <h2 class="v2-h2" id="v2-angebot">Behandlung finden</h2>
+      <input class="v2-search" type="search" placeholder="z. B. Maniküre, Hot Stone …" aria-label="Behandlung suchen" data-search>
+      <div class="v2-chips" role="group" aria-label="Bereich filtern">
+        <button class="v2-chip" aria-pressed="true" data-chip="alle">Alle</button>
+        ${CATS.map((c) => `<button class="v2-chip" aria-pressed="false" data-chip="${c.key}">${c.short}</button>`).join('')}
+      </div>
+      <p class="v2-count" data-count></p>
+      <ul class="v2-list" data-list></ul>
+
+      <h2 class="v2-h2">Gut zu wissen</h2>
+      <div class="v2-info">
+        <div class="v2-card"><b>Termine</b>${S.hours} – einfach anrufen.</div>
+        <div class="v2-card"><b>Pflege</b>Hochwertige Produkte von ${S.brand}.</div>
+        <div class="v2-card"><b>Adresse</b>${S.street}<br>${S.zip} ${S.city}</div>
+      </div>
+
+      <h2 class="v2-h2">Einblicke</h2>
+      <div class="v2-photos">
+        <img src="${IMG.house}" alt="Das Gutshaus"><img src="${IMG.room}" alt="Der Behandlungsraum"><img src="${IMG.corner}" alt="Die Sitzecke">
+      </div>
+    </div>
+    <div class="v2-bar">
+      <div class="v2-wrap">
+        <a class="call" href="${S.tel}">Anrufen · ${S.phone}</a>
+        <a class="route" href="${S.maps}" target="_blank" rel="noopener">Route</a>
+      </div>
+    </div>
+  </div>`, {
+    init(root) {
+      const all = CATS.flatMap((c) => c.items.map((name) => ({ name, cat: c })));
+      const list = root.querySelector('[data-list]');
+      const count = root.querySelector('[data-count]');
+      const search = root.querySelector('[data-search]');
+      const chips = [...root.querySelectorAll('[data-chip]')];
+      let cat = 'alle';
+      // Filtern ist eine häufige Aktion: Ergebnis sofort, ohne Animation
+      const render = () => {
+        const q = search.value.trim().toLowerCase();
+        const hits = all.filter((t) => (cat === 'alle' || t.cat.key === cat) && t.name.toLowerCase().includes(q));
+        count.textContent = `${hits.length} ${hits.length === 1 ? 'Behandlung' : 'Behandlungen'}`;
+        list.innerHTML = hits.length
+          ? hits.map((t) => `<li><span>${t.name}</span><span class="cat">${t.cat.accent}</span></li>`).join('')
+          : `<li class="v2-empty">Nichts gefunden – rufen Sie gern an und fragen Sie nach.</li>`;
+      };
+      chips.forEach((c) => c.addEventListener('click', () => {
+        cat = c.dataset.chip;
+        chips.forEach((x) => x.setAttribute('aria-pressed', String(x === c)));
+        render();
+      }));
+      search.addEventListener('input', render);
+      root.querySelector('[data-jump]').addEventListener('click', () =>
+        root.querySelector('#v2-angebot').scrollIntoView({ behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth' }));
+      render();
+    },
+  }),
+
+  // 3 · Verspielt
+  Object.assign(() => `
+  <div class="v3">
+    <div class="v3-wrap">
+      <span class="v3-blob a"></span><span class="v3-blob b"></span>
+      <header class="v3-top"><img src="${IMG.logo}" alt="${S.name}"><a class="v3-btn soft" style="height:44px;padding:0 18px" href="${S.tel}">Anrufen</a></header>
+      <section class="v3-hero">
+        <div>
+          <p class="v3-script">Wohlfühlstunden</p>
+          <h1>für Körper und Sinne – im Gutshaus in Altenhaßlau.</h1>
+          <p>Gesicht, Hände, Wellness und Massagen mit Pflege von ${S.brand}. Ganz in Ruhe, ganz ohne Fließband.</p>
+          <div class="v3-btns">
+            <a class="v3-btn primary" href="${S.tel}">Termin vereinbaren</a>
+            <a class="v3-btn soft" href="#v3-angebot">Angebot ansehen</a>
+          </div>
+        </div>
+        <div class="v3-medal"><img src="${IMG.house}" alt="Das Gutshaus"></div>
+      </section>
+      <h2 class="v3-h2" id="v3-angebot">Was darf’s sein?</h2>
+      <p class="v3-sub">Tippen Sie auf einen Bereich.</p>
+      <div class="v3-cards">
+        ${CATS.map((c, i) => `
+          <div class="v3-card" style="--i:${i}">
+            <button class="v3-toggle" aria-expanded="${i === 0}" aria-controls="v3-p${i}">
+              <span><span class="acc">${c.accent}</span><span class="ttl">${c.title}</span></span>
+              <span class="v3-plus" aria-hidden="true">+</span>
+            </button>
+            <div class="v3-panel" id="v3-p${i}"><div><ul>${c.items.map((t) => `<li>${t}</li>`).join('')}</ul></div></div>
+          </div>`).join('')}
+      </div>
+      <div class="v3-rooms">
+        <figure><img src="${IMG.room}" alt="Der Behandlungsraum"><figcaption>Behandlungsraum</figcaption></figure>
+        <figure><img src="${IMG.corner}" alt="Die Sitzecke"><figcaption>Sitzecke</figcaption></figure>
+      </div>
+      <section class="v3-contact">
+        <p class="v3-script">Bis bald!</p>
+        <p>${S.hours} – ein Anruf genügt:</p>
+        <a class="phone" href="${S.tel}">${S.phone}</a>
+        <p>${S.street} · ${S.zip} ${S.city}</p>
+        <div class="v3-btns" style="justify-content:center"><a class="v3-btn soft" href="${S.maps}" target="_blank" rel="noopener">Route planen</a></div>
+      </section>
+    </div>
+  </div>`, {
+    init(root) {
+      root.querySelectorAll('.v3-toggle').forEach((b) =>
+        b.addEventListener('click', () => b.setAttribute('aria-expanded', String(b.getAttribute('aria-expanded') !== 'true'))));
+    },
+  }),
+
+  // 4 · Abendruhe
+  () => `
+  <div class="v4">
+    <section class="v4-hero">
+      <img class="v4-bg" src="${IMG.house}" alt="Das Gutshaus">
+      <img class="v4-logo" src="${IMG.logo}" alt="${S.name}">
+      <div class="v4-hero-text">
+        <p class="v4-caps" style="--i:0">Kosmetik im Gutshaus</p>
+        <h1 style="--i:1">Wohlfühlstunden</h1>
+        <p style="--i:2">für Körper und Sinne</p>
+        <div class="v4-rule" style="--i:3"></div>
+        <a class="v4-cta" style="--i:4" href="${S.tel}">Termin vereinbaren</a>
+      </div>
+    </section>
+    <section class="v4-sec">
+      <div class="v4-wrap">
+        <h2 class="v4-h2">Das Programm</h2>
+        <p class="v4-intro">Ein Komplettprogramm rund um die Schönheit – mit Pflege von ${S.brand}, in der Stille eines alten Gutshauses.</p>
+        <div class="v4-menu">
+          ${CATS.map((c) => `<div><h3>${c.accent}<span>${c.title}</span></h3><ul>${c.items.map((t) => `<li>${t}</li>`).join('')}</ul></div>`).join('')}
+        </div>
+      </div>
+    </section>
+    <section class="v4-sec">
+      <div class="v4-wrap v4-gallery">
+        <figure><img src="${IMG.room}" alt="Der Behandlungsraum"><figcaption>Der Behandlungsraum</figcaption></figure>
+        <figure><img src="${IMG.corner}" alt="Die Sitzecke"><figcaption>Die Sitzecke</figcaption></figure>
+      </div>
+    </section>
+    <section class="v4-sec">
+      <div class="v4-wrap">
+        <p class="v4-quote">„${QUOTE}“</p>
+        <p>${S.owner}</p>
+      </div>
+    </section>
+    <section class="v4-sec v4-contact">
+      <div class="v4-wrap">
+        <p class="v4-caps">${S.hours}</p>
+        <a class="phone" href="${S.tel}">${S.phone}</a>
+        <address>${S.street} · ${S.zip} ${S.city}</address>
+        <a class="route" href="${S.maps}" target="_blank" rel="noopener">Route planen</a>
+      </div>
+    </section>
+  </div>`,
+];
+
+// ---- Picker-Verdrahtung (laut PICKER.md); Ergänzung: init-Hook und Sprung nach oben beim Wechsel ----
+const stage = document.getElementById('stage');
+const picker = document.querySelector('.proto-picker');
+const highlight = picker.querySelector('.proto-picker-highlight');
+const items = [...picker.querySelectorAll('.proto-picker-item:not(.proto-picker-replay)')];
+const replay = picker.querySelector('.proto-picker-replay');
+let current = 0;
+
+function moveHighlight() {
+  const el = items[current];
+  highlight.style.width = el.offsetWidth + 'px';
+  highlight.style.transform = `translateX(${el.offsetLeft}px)`;
+}
+
+function mount(i) {
+  stage.innerHTML = '';
+  requestAnimationFrame(() => {
+    stage.innerHTML = variants[i]();
+    variants[i].init?.(stage);
+    window.scrollTo(0, 0);
+  });
+}
+
+function setActive(i) {
+  if (i < 0 || i >= variants.length) return;
+  current = i;
+  items.forEach((el, j) => {
+    el.toggleAttribute('data-active', j === i);
+    if (j === i) el.setAttribute('aria-current', 'true');
+    else el.removeAttribute('aria-current');
+  });
+  moveHighlight();
+  try {
+    const url = new URL(location);
+    url.searchParams.set('v', i + 1);
+    history.replaceState(null, '', url);
+  } catch (e) { /* in manchen Vorschauen ist die URL nicht änderbar */ }
+  mount(i);
+}
+
+items.forEach((el, i) => el.addEventListener('click', () => setActive(i)));
+replay?.addEventListener('click', () => mount(current));
+window.addEventListener('resize', moveHighlight);
+
+document.addEventListener('keydown', (e) => {
+  if (/^(INPUT|TEXTAREA|SELECT)$/.test(e.target.tagName) || e.target.isContentEditable) return;
+  if (e.metaKey || e.ctrlKey || e.altKey) return;
+  const num = parseInt(e.key, 10);
+  if (num >= 1 && num <= variants.length) setActive(num - 1);
+  else if (e.key === 'ArrowRight') setActive((current + 1) % variants.length);
+  else if (e.key === 'ArrowLeft') setActive((current - 1 + variants.length) % variants.length);
+  else if (e.key === 'r' || e.key === 'R') mount(current);
+});
+
+setActive((parseInt(new URLSearchParams(location.search).get('v'), 10) || 1) - 1);
+requestAnimationFrame(() => requestAnimationFrame(() => picker.setAttribute('data-ready', '')));
+</script>
+</body>
+</html>
