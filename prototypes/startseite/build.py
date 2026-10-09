@@ -1,7 +1,7 @@
 # Baut prototypes/startseite/index.html: setzt Fotos, Logo und Schriften als data-URIs in template.html ein,
 # damit die Datei ohne Server und ohne Internet funktioniert.
 # Aufruf aus dem Projektordner: python3 prototypes/startseite/build.py
-import base64, io, pathlib
+import base64, io, json, pathlib, re, subprocess
 from PIL import Image
 
 root = pathlib.Path(__file__).resolve().parents[2]
@@ -32,6 +32,20 @@ values = {
 }
 
 html = (here / 'template.html').read_text(encoding='utf-8')
+
+# Varianten schon beim Bauen rendern (mit Node), damit die Datei auch ohne JavaScript Inhalt zeigt.
+names = ['Magazin', 'Kompakt', 'Verspielt', 'Abendruhe']
+data = re.search(r'<script id="proto-data">(.*?)</script>', html, re.S)
+rendered = json.loads(subprocess.run(
+    ['node', '-e', data.group(1) + '\nprocess.stdout.write(JSON.stringify(variants.map((v) => v())));'],
+    capture_output=True, text=True, check=True).stdout)
+assert len(rendered) == len(names)
+stage = ''.join(
+    f'<section class="proto-variant" data-variant="{i}"><p class="proto-label">Variante {i + 1} · {n}</p>{v}</section>'
+    for i, (n, v) in enumerate(zip(names, rendered)))
+html = html[:data.start()] + html[data.end():]
+html = html.replace('{{STAGE}}', stage)
+
 for key, value in values.items():
     html = html.replace('{{' + key + '}}', value)
 assert '{{' not in html, 'Platzhalter nicht ersetzt'

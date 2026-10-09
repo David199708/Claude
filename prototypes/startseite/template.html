@@ -4,6 +4,7 @@
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
 <title>Prototypen – Kosmetik im Gutshaus</title>
+<script>document.documentElement.classList.add('js');</script>
 <style>
 @font-face { font-family: 'Cormorant'; font-weight: 400; src: url({{CORM400}}) format('woff2'); }
 @font-face { font-family: 'Cormorant'; font-weight: 500; src: url({{CORM500}}) format('woff2'); }
@@ -105,6 +106,7 @@ button { font: inherit; color: inherit; }
 .v2-list { background: #fff; border-radius: 20px; overflow: hidden; }
 .v2-list li { display: flex; justify-content: space-between; gap: 12px; align-items: center; padding: 14px 16px; border-top: 1px solid #eef1f0; }
 .v2-list li:first-child { border-top: 0; }
+.v2-list li[hidden] { display: none; }
 .v2-list .cat { font-size: 12px; color: var(--petrol); background: #e7f1ee; padding: 3px 8px; border-radius: 999px; white-space: nowrap; }
 .v2-empty { padding: 24px 16px; text-align: center; color: #4b5a57; }
 .v2-info { display: grid; gap: 8px; }
@@ -223,6 +225,12 @@ button { font: inherit; color: inherit; }
 
 @keyframes fade { from { opacity: 0; } }
 
+/* ============ Harness: ohne JavaScript alle Varianten untereinander ============ */
+.proto-label { position: relative; z-index: 6; margin: 0; padding: 12px 16px; background: #111; color: #fff; font: 600 14px/1.2 system-ui, sans-serif; }
+.js .proto-label { display: none; }
+html:not(.js) .proto-picker { display: none; }
+html:not(.js) .v2-bar { position: static; }
+
 /* ============ Picker (Harness, nicht Teil des Designs) ============ */
 .proto-picker {
   position: fixed;
@@ -290,7 +298,7 @@ button { font: inherit; color: inherit; }
 </style>
 </head>
 <body>
-<div id="stage"></div>
+<div id="stage">{{STAGE}}</div>
 
 <!-- "Kompakt" belegt den unteren Bildschirmrand mit der Anruf-Leiste, daher sitzt der Picker oben -->
 <nav class="proto-picker" aria-label="Prototype variants" data-position="top">
@@ -303,7 +311,7 @@ button { font: inherit; color: inherit; }
   <button class="proto-picker-item proto-picker-replay" aria-label="Replay animation (R)">↻</button>
 </nav>
 
-<script>
+<script id="proto-data">
 const IMG = { house: '{{HOUSE}}', room: '{{ROOM}}', corner: '{{CORNER}}', logo: '{{LOGO}}' };
 const S = {
   name: 'Kosmetik im Gutshaus', owner: 'Barbara Schäfer', slogan: 'Wohlfühlstunden für Körper und Sinne',
@@ -386,7 +394,7 @@ const variants = [
   </div>`,
 
   // 2 · Kompakt
-  Object.assign(() => `
+  () => `
   <div class="v2">
     <div class="v2-wrap">
       <header class="v2-top">
@@ -414,8 +422,11 @@ const variants = [
         <button class="v2-chip" aria-pressed="true" data-chip="alle">Alle</button>
         ${CATS.map((c) => `<button class="v2-chip" aria-pressed="false" data-chip="${c.key}">${c.short}</button>`).join('')}
       </div>
-      <p class="v2-count" data-count></p>
-      <ul class="v2-list" data-list></ul>
+      <p class="v2-count" data-count>${CATS.reduce((n, c) => n + c.items.length, 0)} Behandlungen</p>
+      <ul class="v2-list" data-list>
+        ${CATS.flatMap((c) => c.items.map((t) => `<li data-cat="${c.key}"><span>${t}</span><span class="cat">${c.accent}</span></li>`)).join('')}
+        <li class="v2-empty" data-empty hidden>Nichts gefunden – rufen Sie gern an und fragen Sie nach.</li>
+      </ul>
 
       <h2 class="v2-h2">Gut zu wissen</h2>
       <div class="v2-info">
@@ -435,37 +446,10 @@ const variants = [
         <a class="route" href="${S.maps}" target="_blank" rel="noopener">Route</a>
       </div>
     </div>
-  </div>`, {
-    init(root) {
-      const all = CATS.flatMap((c) => c.items.map((name) => ({ name, cat: c })));
-      const list = root.querySelector('[data-list]');
-      const count = root.querySelector('[data-count]');
-      const search = root.querySelector('[data-search]');
-      const chips = [...root.querySelectorAll('[data-chip]')];
-      let cat = 'alle';
-      // Filtern ist eine häufige Aktion: Ergebnis sofort, ohne Animation
-      const render = () => {
-        const q = search.value.trim().toLowerCase();
-        const hits = all.filter((t) => (cat === 'alle' || t.cat.key === cat) && t.name.toLowerCase().includes(q));
-        count.textContent = `${hits.length} ${hits.length === 1 ? 'Behandlung' : 'Behandlungen'}`;
-        list.innerHTML = hits.length
-          ? hits.map((t) => `<li><span>${t.name}</span><span class="cat">${t.cat.accent}</span></li>`).join('')
-          : `<li class="v2-empty">Nichts gefunden – rufen Sie gern an und fragen Sie nach.</li>`;
-      };
-      chips.forEach((c) => c.addEventListener('click', () => {
-        cat = c.dataset.chip;
-        chips.forEach((x) => x.setAttribute('aria-pressed', String(x === c)));
-        render();
-      }));
-      search.addEventListener('input', render);
-      root.querySelector('[data-jump]').addEventListener('click', () =>
-        root.querySelector('#v2-angebot').scrollIntoView({ behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth' }));
-      render();
-    },
-  }),
+  </div>`,
 
   // 3 · Verspielt
-  Object.assign(() => `
+  () => `
   <div class="v3">
     <div class="v3-wrap">
       <span class="v3-blob a"></span><span class="v3-blob b"></span>
@@ -506,12 +490,7 @@ const variants = [
         <div class="v3-btns" style="justify-content:center"><a class="v3-btn soft" href="${S.maps}" target="_blank" rel="noopener">Route planen</a></div>
       </section>
     </div>
-  </div>`, {
-    init(root) {
-      root.querySelectorAll('.v3-toggle').forEach((b) =>
-        b.addEventListener('click', () => b.setAttribute('aria-expanded', String(b.getAttribute('aria-expanded') !== 'true'))));
-    },
-  }),
+  </div>`,
 
   // 4 · Abendruhe
   () => `
@@ -559,13 +538,53 @@ const variants = [
   </div>`,
 ];
 
-// ---- Picker-Verdrahtung (laut PICKER.md); Ergänzung: init-Hook und Sprung nach oben beim Wechsel ----
+</script>
+<script>
+// Picker-Verhalten laut PICKER.md. Die Varianten stehen schon fertig im HTML (funktioniert auch ohne JavaScript);
+// hier wird nur umgeschaltet. Umschalten setzt die Variante neu ein, damit Einstiegs-Animationen erneut laufen.
 const stage = document.getElementById('stage');
 const picker = document.querySelector('.proto-picker');
 const highlight = picker.querySelector('.proto-picker-highlight');
 const items = [...picker.querySelectorAll('.proto-picker-item:not(.proto-picker-replay)')];
 const replay = picker.querySelector('.proto-picker-replay');
+let views = [...stage.querySelectorAll('.proto-variant')];
 let current = 0;
+
+function initKompakt(root) {
+  const rows = [...root.querySelectorAll('[data-list] li[data-cat]')];
+  const empty = root.querySelector('[data-empty]');
+  const count = root.querySelector('[data-count]');
+  const search = root.querySelector('[data-search]');
+  const chips = [...root.querySelectorAll('[data-chip]')];
+  let cat = 'alle';
+  // Filtern ist eine häufige Aktion: Ergebnis sofort, ohne Animation
+  const render = () => {
+    const q = search.value.trim().toLowerCase();
+    let n = 0;
+    rows.forEach((li) => {
+      const show = (cat === 'alle' || li.dataset.cat === cat) && li.firstElementChild.textContent.toLowerCase().includes(q);
+      li.hidden = !show;
+      n += show;
+    });
+    empty.hidden = n > 0;
+    count.textContent = `${n} ${n === 1 ? 'Behandlung' : 'Behandlungen'}`;
+  };
+  chips.forEach((c) => c.addEventListener('click', () => {
+    cat = c.dataset.chip;
+    chips.forEach((x) => x.setAttribute('aria-pressed', String(x === c)));
+    render();
+  }));
+  search.addEventListener('input', render);
+  root.querySelector('[data-jump]').addEventListener('click', () =>
+    root.querySelector('#v2-angebot').scrollIntoView({ behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth' }));
+}
+
+function initVerspielt(root) {
+  root.querySelectorAll('.v3-toggle').forEach((b) =>
+    b.addEventListener('click', () => b.setAttribute('aria-expanded', String(b.getAttribute('aria-expanded') !== 'true'))));
+}
+
+const inits = [null, initKompakt, initVerspielt, null];
 
 function moveHighlight() {
   const el = items[current];
@@ -574,16 +593,16 @@ function moveHighlight() {
 }
 
 function mount(i) {
-  stage.innerHTML = '';
-  requestAnimationFrame(() => {
-    stage.innerHTML = variants[i]();
-    variants[i].init?.(stage);
-    window.scrollTo(0, 0);
-  });
+  const fresh = views[i].cloneNode(true);
+  views[i].replaceWith(fresh);
+  views[i] = fresh;
+  views.forEach((v, j) => (v.hidden = j !== i));
+  inits[i]?.(fresh);
+  window.scrollTo(0, 0);
 }
 
 function setActive(i) {
-  if (i < 0 || i >= variants.length) return;
+  if (i < 0 || i >= views.length) return;
   current = i;
   items.forEach((el, j) => {
     el.toggleAttribute('data-active', j === i);
@@ -607,13 +626,15 @@ document.addEventListener('keydown', (e) => {
   if (/^(INPUT|TEXTAREA|SELECT)$/.test(e.target.tagName) || e.target.isContentEditable) return;
   if (e.metaKey || e.ctrlKey || e.altKey) return;
   const num = parseInt(e.key, 10);
-  if (num >= 1 && num <= variants.length) setActive(num - 1);
-  else if (e.key === 'ArrowRight') setActive((current + 1) % variants.length);
-  else if (e.key === 'ArrowLeft') setActive((current - 1 + variants.length) % variants.length);
+  if (num >= 1 && num <= views.length) setActive(num - 1);
+  else if (e.key === 'ArrowRight') setActive((current + 1) % views.length);
+  else if (e.key === 'ArrowLeft') setActive((current - 1 + views.length) % views.length);
   else if (e.key === 'r' || e.key === 'R') mount(current);
 });
 
-setActive((parseInt(new URLSearchParams(location.search).get('v'), 10) || 1) - 1);
+let start = 1;
+try { start = parseInt(new URLSearchParams(location.search).get('v'), 10) || 1; } catch (e) {}
+setActive(start - 1);
 requestAnimationFrame(() => requestAnimationFrame(() => picker.setAttribute('data-ready', '')));
 </script>
 </body>
