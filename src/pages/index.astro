@@ -5,6 +5,9 @@ import Footer from '../components/Footer.astro';
 import ManorIllustration from '../components/ManorIllustration.astro';
 import Treatments from '../components/Treatments.astro';
 import HouseTour from '../components/HouseTour.astro';
+import MoodBand from '../components/MoodBand.astro';
+import { Image } from 'astro:assets';
+import stillleben from '../assets/stock/stillleben.jpg';
 import { studio } from '../data/site';
 ---
 
@@ -51,14 +54,17 @@ import { studio } from '../data/site';
       </div>
     </section>
 
+    <MoodBand />
+
     <!-- Das Gutshaus: Scroll-Fahrt von außen nach innen -->
     <HouseTour />
 
     <!-- Über mich -->
     <section id="ueber-mich" class="section about">
       <div class="container about-grid">
-        <div class="portrait reveal-clip" aria-label="Platzhalter für ein Foto">
-          <span>Foto folgt</span>
+        <div class="portrait reveal-clip">
+          <!-- Stimmungsbild als Platzhalter, bis ein Foto von der Inhaberin da ist -->
+          <Image src={stillleben} alt="Handtuch, Kerze und Tulpen – Ruhe im Studio" widths={[480, 880]} sizes="(min-width: 900px) 440px, 90vw" loading="lazy" />
         </div>
         <div class="about-text reveal" style="--delay: 80ms">
           <p class="eyebrow">Über mich</p>
@@ -222,14 +228,15 @@ import { studio } from '../data/site';
     background:
       linear-gradient(160deg, rgba(255, 255, 255, 0.4), transparent),
       var(--sand);
-    display: grid;
-    place-items: center;
-    color: var(--muted);
-    font-family: var(--serif);
-    font-style: italic;
-    font-size: 22px;
+    overflow: hidden;
     max-width: 440px;
     width: 100%;
+  }
+
+  .portrait :global(img) {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
   }
 
   @media (max-width: 899px) {

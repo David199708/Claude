@@ -1,0 +1,77 @@
+---
+// Breiter Bildstreifen als Atempause zwischen Behandlungen und Gutshaus.
+// Das Foto zoomt beim Durchscrollen sanft heran; der Satz baut sich Wort für Wort auf (global .words).
+import { Image } from 'astro:assets';
+import band from '../assets/stock/band.jpg';
+---
+
+<section class="band" data-band aria-label="Stimmungsbild">
+  <Image src={band} alt="" widths={[800, 1400, 2000]} sizes="100vw" loading="lazy" data-band-img />
+  <div class="band-text reveal">
+    <p class="words">Ankommen. Durchatmen. Genießen.</p>
+  </div>
+</section>
+
+<script>
+  const band = document.querySelector<HTMLElement>('[data-band]');
+  const img = band?.querySelector<HTMLElement>('[data-band-img]');
+  const reduce = window.matchMedia('(prefers-reduced-motion: reduce)');
+  if (band && img) {
+    let req = 0;
+    // Folgt dem Scrollen direkt: 1.15 beim Hereinkommen, 1.0 beim Verlassen
+    const update = () => {
+      req = 0;
+      const r = band.getBoundingClientRect();
+      const p = Math.min(1, Math.max(0, (window.innerHeight - r.top) / (window.innerHeight + r.height)));
+      img.style.transform = reduce.matches ? '' : `scale(${1.15 - 0.15 * p})`;
+    };
+    window.addEventListener('scroll', () => (req ||= requestAnimationFrame(update)), { passive: true });
+    update();
+  }
+</script>
+
+<style>
+  .band {
+    position: relative;
+    height: clamp(320px, 70vh, 640px);
+    overflow: hidden;
+    display: grid;
+    place-items: center;
+    background: #1c1714;
+  }
+
+  .band :global(img) {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transform: scale(1.15);
+  }
+
+  .band::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: rgba(20, 16, 13, 0.35);
+  }
+
+  .band-text {
+    position: relative;
+    z-index: 1;
+    padding: 0 var(--gutter);
+    text-align: center;
+    color: #fff;
+    font-family: var(--serif);
+    font-style: italic;
+    font-size: clamp(34px, 6vw, 72px);
+    line-height: 1.1;
+    text-wrap: balance;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .band :global(img) {
+      transform: none;
+    }
+  }
+</style>
