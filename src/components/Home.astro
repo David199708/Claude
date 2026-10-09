@@ -1,5 +1,4 @@
 ---
-// Die komplette Startseite. Wird von index.astro (Originaldesign) und den Entwürfen (design-Attribut) genutzt.
 import Base from '../layouts/Base.astro';
 import Header from './Header.astro';
 import Footer from './Footer.astro';
@@ -10,14 +9,9 @@ import MoodBand from './MoodBand.astro';
 import { Image } from 'astro:assets';
 import stillleben from '../assets/stock/stillleben.jpg';
 import { studio } from '../data/site';
-
-interface Props {
-  design?: string;
-}
-const { design } = Astro.props;
 ---
 
-<Base design={design}>
+<Base>
   <Header />
 
   <main>

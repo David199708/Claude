@@ -1,0 +1,225 @@
+---
+// Entwurf 1 · Botanik — geteilter Bildschirm: links steht ein Bild, das je Abschnitt weich überblendet,
+// rechts scrollt der Inhalt. Behandlungen als Akkordeon. Leinen, Salbei, Terrakotta.
+import { Image } from 'astro:assets';
+import Draft from '../../layouts/Draft.astro';
+import { studio, categories, extraNote } from '../../data/site';
+import haus from '../../assets/gutshaus.webp';
+import raum from '../../assets/innen-1.png';
+import ecke from '../../assets/innen-2.png';
+import gesicht from '../../assets/stock/gesicht.jpg';
+import still from '../../assets/stock/stillleben.jpg';
+import '@fontsource/fraunces/latin-400.css';
+import '@fontsource/fraunces/latin-400-italic.css';
+import '@fontsource/dm-sans/latin-400.css';
+import '@fontsource/dm-sans/latin-500.css';
+
+const scenes = [
+  { img: haus, alt: 'Das Gutshaus in der Hofstraße' },
+  { img: gesicht, alt: 'Gesichtsbehandlung' },
+  { img: raum, alt: 'Der Behandlungsraum' },
+  { img: still, alt: 'Handtuch, Kerze und Tulpen' },
+  { img: ecke, alt: 'Die Sitzecke' },
+];
+---
+
+<Draft title="Botanik" theme="#f3eee4">
+  <header class="b-nav">
+    <a href="#start"><img src="/logo.png" alt={studio.name} class="b-logo" /></a>
+    <nav><a href="#behandlungen">Behandlungen</a><a href="#haus">Das Haus</a><a href="#kontakt">Kontakt</a></nav>
+    <a class="b-btn small" href={studio.phoneHref}>Anrufen</a>
+  </header>
+
+  <main class="b-split" id="start">
+    <!-- Bildbühne: steht links still, wechselt je Abschnitt -->
+    <div class="b-stage" aria-hidden="true">
+      {scenes.map((s, i) => (
+        <Image src={s.img} alt="" class:list={['b-scene', { 'is-active': i === 0 }]} data-scene-img={i} widths={[640, 1100]} sizes="50vw" loading={i === 0 ? 'eager' : 'lazy'} />
+      ))}
+    </div>
+
+    <div class="b-content">
+      <section class="b-sec b-hero" data-scene="0">
+        <Image src={haus} alt={scenes[0].alt} class="b-inline" widths={[640]} sizes="100vw" loading="eager" />
+        <p class="b-eyebrow" data-in>Kosmetikstudio · {studio.city}</p>
+        <h1 data-in style="--d:1">Wohlfühl&shy;stunden <em>für Körper und Sinne</em></h1>
+        <p class="b-lead" data-in style="--d:2">Persönliche Kosmetik im alten Gutshaus – mit Zeit, Ruhe und Pflege von {studio.brand}.</p>
+        <div class="b-actions" data-in style="--d:3">
+          <a class="b-btn" href={studio.phoneHref}>Termin vereinbaren</a>
+          <a class="b-link" href="#behandlungen">Behandlungen ansehen →</a>
+        </div>
+      </section>
+
+      <section class="b-sec" id="behandlungen" data-scene="1">
+        <Image src={gesicht} alt={scenes[1].alt} class="b-inline" widths={[640]} sizes="100vw" loading="lazy" />
+        <p class="b-eyebrow" data-in>Behandlungen</p>
+        <h2 data-in style="--d:1">Was darf es heute sein?</h2>
+        <div class="b-acc" data-acc>
+          {categories.map((c, i) => (
+            <div class="b-acc-item" data-in style={`--d:${i + 2}`}>
+              <button class="b-acc-head" aria-expanded={i === 0 ? 'true' : 'false'} aria-controls={`b-p${i}`}>
+                <span><em>{c.accent}</em> {c.title}</span>
+                <span class="b-count">{c.items.length}</span>
+                <span class="b-plus" aria-hidden="true"></span>
+              </button>
+              <div class="b-acc-panel" id={`b-p${i}`}><div><ul>{c.items.map((t) => <li>{t.name}</li>)}</ul></div></div>
+            </div>
+          ))}
+        </div>
+        <p class="b-note" data-in>{extraNote}</p>
+      </section>
+
+      <section class="b-sec" id="haus" data-scene="2">
+        <Image src={raum} alt={scenes[2].alt} class="b-inline" widths={[640]} sizes="100vw" loading="lazy" />
+        <p class="b-eyebrow" data-in>Das Gutshaus</p>
+        <h2 data-in style="--d:1">Roter Sandstein, grüne Läden – und drinnen ganz viel Ruhe.</h2>
+        <p data-in style="--d:2">Mein Studio liegt im Gutshaus in der {studio.street}. Der Behandlungsraum ist hell und warm, die Liebe zum Detail sieht man in jeder Ecke.</p>
+      </section>
+
+      <section class="b-sec" data-scene="3">
+        <Image src={still} alt={scenes[3].alt} class="b-inline" widths={[640]} sizes="100vw" loading="lazy" />
+        <p class="b-eyebrow" data-in>Über mich</p>
+        <blockquote data-in style="--d:1">„Bei mir gibt es keine Fließbandtermine. Jede Behandlung beginnt mit einem Gespräch.“</blockquote>
+        <p class="b-sign" data-in style="--d:2">— {studio.owner}</p>
+      </section>
+
+      <section class="b-sec b-contact" id="kontakt" data-scene="4">
+        <Image src={ecke} alt={scenes[4].alt} class="b-inline" widths={[640]} sizes="100vw" loading="lazy" />
+        <p class="b-eyebrow" data-in>Kontakt</p>
+        <h2 data-in style="--d:1">Ein Anruf genügt.</h2>
+        <a class="b-phone" href={studio.phoneHref} data-in style="--d:2">{studio.phone}</a>
+        <p data-in style="--d:3">{studio.hours}<br />{studio.street} · {studio.zip} {studio.city}</p>
+        <a class="b-link" href={studio.mapsUrl} target="_blank" rel="noopener" data-in style="--d:4">Route planen →</a>
+        <p class="b-legal"><a href="/impressum">Impressum</a> · <a href="/datenschutz">Datenschutz</a></p>
+      </section>
+    </div>
+  </main>
+
+  <script>
+    // Bildbühne: der Abschnitt in der Bildschirmmitte bestimmt das Bild
+    const imgs = [...document.querySelectorAll<HTMLElement>('[data-scene-img]')];
+    const show = (i: number) => imgs.forEach((img, j) => img.classList.toggle('is-active', i === j));
+    const io = new IntersectionObserver(
+      (es) => es.forEach((e) => e.isIntersecting && show(Number((e.target as HTMLElement).dataset.scene))),
+      { rootMargin: '-50% 0px -50% 0px' },
+    );
+    document.querySelectorAll('[data-scene]').forEach((s) => io.observe(s));
+
+    // Akkordeon
+    document.querySelectorAll<HTMLButtonElement>('.b-acc-head').forEach((b) =>
+      b.addEventListener('click', () => b.setAttribute('aria-expanded', String(b.getAttribute('aria-expanded') !== 'true'))),
+    );
+  </script>
+
+  <style is:global>
+    :root {
+      --bg: #f3eee4;
+      --ink: #2e3a2c;
+      --muted: #627060;
+      --terra: #b4583a;
+      --sage: #4d6b4f;
+      --line: #d9ceb9;
+      --ease-out: cubic-bezier(0.23, 1, 0.32, 1);
+    }
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; scroll-padding-top: 72px; -webkit-text-size-adjust: 100%; }
+    body { margin: 0; background: var(--bg); color: var(--ink); font: 17px/1.65 'DM Sans', system-ui, sans-serif; -webkit-font-smoothing: antialiased; -webkit-tap-highlight-color: transparent; }
+    img { display: block; max-width: 100%; height: auto; } /* height-Attribut von <Image> darf das Seitenverhältnis nicht überstimmen */
+    a { color: inherit; }
+    h1, h2, p, blockquote, ul { margin: 0; }
+    :focus-visible { outline: 2px solid var(--terra); outline-offset: 3px; }
+
+    .b-nav {
+      position: fixed; inset: 0 0 auto; z-index: 10; height: 64px;
+      display: flex; align-items: center; justify-content: space-between; gap: 16px;
+      padding: 0 clamp(16px, 3vw, 32px);
+      background: color-mix(in srgb, var(--bg) 80%, transparent);
+      backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px);
+    }
+    .b-logo { height: 40px; width: auto; }
+    .b-nav nav { display: none; gap: 28px; font-size: 15px; }
+    .b-nav nav a { text-decoration: none; color: var(--muted); padding: 12px 0; }
+    @media (min-width: 900px) { .b-nav nav { display: flex; } }
+
+    .b-btn {
+      display: inline-flex; align-items: center; min-height: 48px; padding: 0 26px;
+      border-radius: 999px 999px 999px 6px; background: var(--terra); color: #fff; text-decoration: none; font-weight: 500;
+      transition: transform 160ms var(--ease-out), background-color 200ms ease;
+    }
+    .b-btn.small { min-height: 44px; padding: 0 18px; font-size: 14px; }
+    .b-btn:active { transform: scale(0.97); }
+    .b-link { display: inline-block; padding: 12px 0; color: var(--sage); font-weight: 500; text-decoration: none; }
+    @media (hover: hover) and (pointer: fine) {
+      .b-btn:hover { background: #9c4a30; }
+      .b-link:hover { text-decoration: underline; text-underline-offset: 4px; }
+    }
+
+    /* Geteilter Bildschirm ab Tablet-Breite */
+    .b-stage { display: none; }
+    .b-inline { width: 100%; aspect-ratio: 4 / 3; object-fit: cover; border-radius: 28px; margin-bottom: 28px; }
+    @media (min-width: 900px) {
+      .b-split { display: grid; grid-template-columns: 1fr 1fr; }
+      .b-stage { display: block; position: sticky; top: 0; height: 100svh; overflow: hidden; }
+      .b-inline { display: none; }
+    }
+    .b-scene {
+      position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover;
+      opacity: 0; filter: blur(10px); transform: scale(1.06);
+      transition: opacity 900ms ease, filter 900ms ease, transform 1400ms var(--ease-out);
+    }
+    .b-scene.is-active { opacity: 1; filter: none; transform: none; }
+
+    .b-content { padding: 64px clamp(20px, 6vw, 88px) 0; }
+    .b-sec { min-height: 90svh; display: flex; flex-direction: column; justify-content: center; padding: 64px 0; border-bottom: 1px solid var(--line); }
+    .b-sec:last-child { border-bottom: 0; }
+
+    .b-eyebrow { font-size: 13px; letter-spacing: 0.16em; text-transform: uppercase; color: var(--sage); margin-bottom: 16px; }
+    h1, h2, blockquote { font-family: 'Fraunces', Georgia, serif; font-weight: 400; letter-spacing: -0.02em; text-wrap: balance; }
+    h1 { font-size: clamp(44px, 6vw, 80px); line-height: 1.02; hyphens: manual; }
+    h1 em { display: block; color: var(--terra); }
+    h2 { font-size: clamp(32px, 3.6vw, 48px); line-height: 1.1; margin-bottom: 20px; }
+    .b-lead { font-size: 19px; color: var(--muted); margin-top: 20px; max-width: 30em; }
+    .b-actions { display: flex; flex-wrap: wrap; align-items: center; gap: 12px 24px; margin-top: 32px; }
+    .b-sec > p:not(.b-eyebrow) { color: var(--muted); max-width: 32em; }
+
+    /* Akkordeon */
+    .b-acc { border-top: 1px solid var(--line); margin-top: 8px; }
+    .b-acc-item { border-bottom: 1px solid var(--line); }
+    .b-acc-head {
+      width: 100%; display: grid; grid-template-columns: 1fr auto auto; align-items: center; gap: 16px;
+      min-height: 64px; padding: 14px 0; border: 0; background: none; color: inherit; text-align: left; cursor: pointer;
+      font: 400 22px/1.2 'Fraunces', Georgia, serif;
+    }
+    .b-acc-head em { color: var(--terra); }
+    .b-count { font: 500 13px 'DM Sans', sans-serif; color: var(--muted); background: #e8e0cf; border-radius: 999px; padding: 3px 10px; }
+    .b-plus { position: relative; width: 16px; height: 16px; }
+    .b-plus::before, .b-plus::after { content: ''; position: absolute; left: 0; right: 0; top: 7px; height: 2px; background: var(--sage); border-radius: 2px; transition: transform 250ms var(--ease-out); }
+    .b-plus::after { transform: rotate(90deg); }
+    [aria-expanded='true'] .b-plus::after { transform: rotate(0deg); }
+    .b-acc-panel { display: grid; grid-template-rows: 0fr; transition: grid-template-rows 280ms var(--ease-out); }
+    [aria-expanded='true'] + .b-acc-panel, .no-js .b-acc-panel { grid-template-rows: 1fr; }
+    .b-acc-panel > div { overflow: hidden; }
+    .b-acc-panel ul { list-style: none; padding: 0 0 18px; columns: 2; column-gap: 24px; color: var(--muted); }
+    .b-acc-panel li { padding: 4px 0; break-inside: avoid; }
+    @media (max-width: 520px) { .b-acc-panel ul { columns: 1; } }
+    .b-note { margin-top: 20px; font-style: italic; }
+
+    blockquote { font-size: clamp(28px, 3vw, 40px); line-height: 1.25; font-style: italic; }
+    .b-sign { margin-top: 18px; }
+    .b-phone { font: 400 clamp(40px, 5vw, 64px)/1.1 'Fraunces', serif; color: var(--terra); text-decoration: none; margin: 8px 0 16px; display: inline-block; }
+    .b-legal { margin-top: 48px; font-size: 14px; }
+    .b-legal a { display: inline-block; padding: 12px 0; color: var(--muted); }
+
+    /* Einblenden: weich aufsteigend, gestaffelt */
+    [data-in] { opacity: 0; transform: translateY(24px); transition: opacity 800ms var(--ease-out), transform 800ms var(--ease-out); transition-delay: calc(var(--d, 0) * 90ms); }
+    [data-in].is-in { opacity: 1; transform: none; }
+
+    @media (prefers-reduced-motion: reduce) {
+      html { scroll-behavior: auto; }
+      [data-in] { transform: none; transition: opacity 400ms ease; }
+      .b-scene { filter: none; transform: none; transition: opacity 400ms ease; }
+      .b-acc-panel, .b-plus::after { transition: none; }
+      .b-btn:active { transform: none; }
+    }
+  </style>
+</Draft>

@@ -1,0 +1,40 @@
+---
+// Schlanker Rahmen für die Gestaltungsentwürfe: Kopfdaten, Icons und ein gemeinsamer
+// "ist sichtbar"-Melder. Jede Entwurfsseite bringt ihr eigenes Layout, CSS und ihre eigenen Animationen mit.
+import { studio } from '../data/site';
+
+interface Props {
+  title: string;
+  theme: string;
+}
+const { title, theme } = Astro.props;
+---
+
+<!doctype html>
+<html lang="de" class="no-js">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta name="theme-color" content={theme} />
+    <title>{studio.name} – Entwurf {title}</title>
+    <meta name="description" content={`${studio.name}: ${studio.slogan}. Termine unter ${studio.phone}.`} />
+    <link rel="icon" href="/favicon.png" type="image/png" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+    <script is:inline>document.documentElement.classList.remove('no-js');</script>
+    <style is:global>
+      /* Ohne JavaScript ist alles sofort sichtbar */
+      .no-js [data-in] { opacity: 1 !important; transform: none !important; clip-path: none !important; filter: none !important; }
+    </style>
+  </head>
+  <body>
+    <slot />
+    <script>
+      // Markiert Elemente mit data-in einmalig, sobald sie ins Bild kommen
+      const io = new IntersectionObserver(
+        (entries) => entries.forEach((e) => e.isIntersecting && (e.target.classList.add('is-in'), io.unobserve(e.target))),
+        { rootMargin: '0px 0px -10% 0px' },
+      );
+      document.querySelectorAll('[data-in]').forEach((el) => io.observe(el));
+    </script>
+  </body>
+</html>

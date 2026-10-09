@@ -86,9 +86,7 @@ const pad = (n: number) => String(n + 1).padStart(2, '0');
       const h = tablist.clientHeight;
       const top = t.offsetTop;
       const left = t.offsetLeft;
-      // Rundung kommt aus dem Design (--tab-radius), Standard ist die Pille
-      const r = getComputedStyle(tablist).getPropertyValue('--tab-radius').trim() || '999px';
-      copy.style.clipPath = `inset(${top}px ${w - left - t.offsetWidth}px ${h - top - t.offsetHeight}px ${left}px round ${r})`;
+      copy.style.clipPath = `inset(${top}px ${w - left - t.offsetWidth}px ${h - top - t.offsetHeight}px ${left}px round 999px)`;
     };
 
     // Tastatur-Wechsel ohne Animation – wer mit Pfeiltasten springt, soll nicht warten.

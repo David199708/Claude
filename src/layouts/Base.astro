@@ -5,12 +5,10 @@ import { studio } from '../data/site';
 interface Props {
   title?: string;
   description?: string;
-  design?: string;
 }
 
 const {
   title = `${studio.name} – Kosmetikstudio in ${studio.city}`,
-  design,
   description = `${studio.name}: ${studio.slogan}. Gesichtsbehandlungen, Maniküre, Massagen und Wellness in ${studio.city}. Termine nach Vereinbarung unter ${studio.phone}.`,
 } = Astro.props;
 
@@ -30,7 +28,7 @@ const localBusiness = {
 ---
 
 <!doctype html>
-<html lang="de" class="no-js" data-design={design}>
+<html lang="de" class="no-js">
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />

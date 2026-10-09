@@ -1,0 +1,237 @@
+---
+// Entwurf 4 · Nordisch — typografischer Index: feste Kapitelleiste links mit mitgleitender Markierung,
+// Behandlungen als Register, am Computer folgt ein Vorschaubild der Maus. Weiß, Schwarz, Sand.
+import { Image } from 'astro:assets';
+import Draft from '../../layouts/Draft.astro';
+import { studio, categories, extraNote } from '../../data/site';
+import haus from '../../assets/gutshaus.webp';
+import raum from '../../assets/innen-1.png';
+import gesicht from '../../assets/stock/gesicht.jpg';
+import haende from '../../assets/stock/haende.jpg';
+import pflege from '../../assets/stock/pflege.jpg';
+import massage from '../../assets/stock/massage.jpg';
+import still from '../../assets/stock/stillleben.jpg';
+import '@fontsource/manrope/latin-400.css';
+import '@fontsource/manrope/latin-600.css';
+import '@fontsource/manrope/latin-800.css';
+
+const photos = [gesicht, haende, pflege, massage];
+const chapters = [
+  ['start', 'Start'],
+  ['behandlungen', 'Behandlungen'],
+  ['haus', 'Das Haus'],
+  ['ueber', 'Über mich'],
+  ['kontakt', 'Kontakt'],
+];
+---
+
+<Draft title="Nordisch" theme="#fafaf8">
+  <header class="o-top">
+    <a href="#start"><img src="/logo.png" alt={studio.name} class="o-logo" /></a>
+    <a class="o-tel" href={studio.phoneHref}>{studio.phone}</a>
+  </header>
+
+  <div class="o-layout">
+    <nav class="o-index" aria-label="Kapitel">
+      <span class="o-marker" aria-hidden="true" data-marker></span>
+      {chapters.map(([id, label], i) => (
+        <a href={`#${id}`} data-chapter-link={id}><span>{String(i + 1).padStart(2, '0')}</span>{label}</a>
+      ))}
+    </nav>
+
+    <main>
+      <section class="o-sec o-hero" id="start" data-chapter>
+        <p class="o-label">Kosmetikstudio — {studio.city}</p>
+        <h1><span class="o-up" style="--d:0">Wohlfühl-</span><span class="o-up" style="--d:1">stunden.</span></h1>
+        <span class="o-rule" data-in aria-hidden="true"></span>
+        <dl class="o-meta">
+          <div><dt>Adresse</dt><dd>{studio.street}<br />{studio.zip} {studio.city}</dd></div>
+          <div><dt>Termine</dt><dd>Nach Vereinbarung</dd></div>
+          <div><dt>Telefon</dt><dd><a href={studio.phoneHref}>{studio.phone}</a></dd></div>
+        </dl>
+      </section>
+
+      <section class="o-sec" id="behandlungen" data-chapter>
+        <p class="o-label">02 — Behandlungen</p>
+        <h2>Register</h2>
+        <div class="o-register">
+          {categories.map((c, i) => (
+            <div class="o-group" data-preview={i}>
+              <div class="o-group-head">
+                <span class="o-n">{String(i + 1).padStart(2, '0')}</span>
+                <h3>{c.title}</h3>
+                <span class="o-cat">{c.accent}</span>
+                <Image src={photos[i]} alt="" class="o-thumb" widths={[240]} sizes="96px" loading="lazy" />
+              </div>
+              <ul>{c.items.map((t) => <li>{t.name}</li>)}</ul>
+            </div>
+          ))}
+        </div>
+        <p class="o-note">{extraNote}</p>
+        <!-- Vorschaubild, das der Maus folgt (nur am Computer) -->
+        <div class="o-float" aria-hidden="true" data-float>
+          {photos.map((p) => <Image src={p} alt="" widths={[480]} sizes="280px" loading="eager" />)}
+        </div>
+      </section>
+
+      <section class="o-sec" id="haus" data-chapter>
+        <p class="o-label">03 — Das Haus</p>
+        <h2>Hofstraße 2.</h2>
+        <figure class="o-photo" data-in><Image src={haus} alt="Das Gutshaus in der Hofstraße" widths={[640]} sizes="(min-width: 900px) 70vw, 100vw" loading="lazy" /><figcaption>Rotes Sandsteinhaus, grüne Läden. Das Studio liegt im Erdgeschoss.</figcaption></figure>
+        <figure class="o-photo" data-in><Image src={raum} alt="Der Behandlungsraum" widths={[640]} sizes="(min-width: 900px) 70vw, 100vw" loading="lazy" /><figcaption>Der Behandlungsraum.</figcaption></figure>
+      </section>
+
+      <section class="o-sec o-about" id="ueber" data-chapter>
+        <p class="o-label">04 — Über mich</p>
+        <div class="o-about-grid">
+          <figure class="o-photo" data-in><Image src={still} alt="Handtuch, Kerze und Tulpen" widths={[480]} sizes="(min-width: 900px) 30vw, 100vw" loading="lazy" /></figure>
+          <p class="o-big">Ich bin {studio.owner}. Bei mir gibt es <mark>keine Fließbandtermine</mark>: Jede Behandlung beginnt mit einem Gespräch – und mit der Zeit, die Ihre Haut braucht.</p>
+        </div>
+      </section>
+
+      <section class="o-sec o-contact" id="kontakt" data-chapter>
+        <p class="o-label">05 — Kontakt</p>
+        <a class="o-phone" href={studio.phoneHref}>{studio.phone}</a>
+        <span class="o-rule" data-in aria-hidden="true"></span>
+        <div class="o-contact-row">
+          <span>{studio.street}, {studio.zip} {studio.city}</span>
+          <a href={studio.mapsUrl} target="_blank" rel="noopener">Route planen ↗</a>
+          <a href="/impressum">Impressum</a>
+          <a href="/datenschutz">Datenschutz</a>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <script>
+    const reduce = matchMedia('(prefers-reduced-motion: reduce)');
+
+    // Kapitelleiste: Markierung gleitet zum aktuellen Kapitel
+    const links = [...document.querySelectorAll<HTMLElement>('[data-chapter-link]')];
+    const marker = document.querySelector<HTMLElement>('[data-marker]')!;
+    const mark = (id: string) => {
+      const a = links.find((l) => l.dataset.chapterLink === id);
+      if (!a) return;
+      links.forEach((l) => l.toggleAttribute('data-current', l === a));
+      marker.style.transform = `translateY(${a.offsetTop}px)`;
+      marker.style.height = `${a.offsetHeight}px`; // Höhe springt, nur die Position gleitet
+    };
+    const io = new IntersectionObserver((es) => es.forEach((e) => e.isIntersecting && mark(e.target.id)), { rootMargin: '-45% 0px -50% 0px' });
+    document.querySelectorAll('[data-chapter]').forEach((s) => io.observe(s));
+    mark('start');
+
+    // Vorschaubild folgt der Maus mit leichter Verzögerung (nur feiner Zeiger, nicht bei reduzierter Bewegung)
+    const float = document.querySelector<HTMLElement>('[data-float]')!;
+    const imgs = [...float.querySelectorAll<HTMLElement>('img')];
+    if (matchMedia('(hover: hover) and (pointer: fine)').matches && !reduce.matches) {
+      let x = 0, y = 0, tx = 0, ty = 0, raf = 0;
+      const loop = () => {
+        x += (tx - x) * 0.18;
+        y += (ty - y) * 0.18;
+        float.style.transform = `translate(${x}px, ${y}px)`;
+        raf = Math.abs(tx - x) + Math.abs(ty - y) > 0.5 ? requestAnimationFrame(loop) : 0;
+      };
+      document.querySelectorAll<HTMLElement>('[data-preview]').forEach((g) => {
+        g.addEventListener('pointerenter', () => {
+          imgs.forEach((im, i) => im.classList.toggle('is-on', String(i) === g.dataset.preview));
+          float.classList.add('is-on');
+        });
+        g.addEventListener('pointerleave', () => float.classList.remove('is-on'));
+        g.addEventListener('pointermove', (e) => {
+          tx = e.clientX + 24;
+          ty = e.clientY - 120;
+          if (!float.dataset.placed) { x = tx; y = ty; float.dataset.placed = '1'; }
+          if (!raf) raf = requestAnimationFrame(loop);
+        });
+      });
+    }
+  </script>
+
+  <style is:global>
+    :root { --bg: #fafaf8; --ink: #111; --muted: #6b6b6b; --sand: #b8956a; --ease-out: cubic-bezier(0.23, 1, 0.32, 1); --ease-in-out: cubic-bezier(0.77, 0, 0.175, 1); }
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; scroll-padding-top: 64px; -webkit-text-size-adjust: 100%; }
+    body { margin: 0; background: var(--bg); color: var(--ink); font: 16px/1.6 'Manrope', system-ui, sans-serif; -webkit-font-smoothing: antialiased; -webkit-tap-highlight-color: transparent; }
+    img { display: block; max-width: 100%; height: auto; } /* height-Attribut von <Image> darf das Seitenverhältnis nicht überstimmen */
+    a { color: inherit; }
+    h1, h2, h3, p, ul, dl, dd, figure { margin: 0; }
+    :focus-visible { outline: 2px solid var(--ink); outline-offset: 3px; }
+
+    .o-top { position: sticky; top: 0; z-index: 10; height: 56px; display: flex; align-items: center; justify-content: space-between; padding: 0 clamp(16px, 3vw, 40px); background: var(--bg); border-bottom: 1px solid var(--ink); }
+    .o-logo { height: 34px; width: auto; }
+    .o-tel { font-weight: 800; text-decoration: none; padding: 12px 0; font-variant-numeric: tabular-nums; }
+
+    .o-layout { display: grid; }
+    .o-index { display: none; }
+    @media (min-width: 1000px) {
+      .o-layout { grid-template-columns: 220px 1fr; }
+      .o-index { display: flex; flex-direction: column; position: sticky; top: 56px; height: calc(100svh - 56px); padding: 40px 0 0 clamp(16px, 3vw, 40px); border-right: 1px solid var(--ink); }
+    }
+    .o-index a { position: relative; z-index: 1; display: flex; gap: 12px; padding: 10px 12px; font-size: 14px; font-weight: 600; text-decoration: none; color: var(--muted); transition: color 200ms ease; }
+    .o-index a span { font-weight: 800; color: var(--sand); }
+    .o-index a[data-current] { color: #fff; }
+    .o-index a[data-current] span { color: #fff; }
+    .o-marker { position: absolute; left: clamp(16px, 3vw, 40px); right: 0; top: 0; background: var(--ink); transition: transform 350ms var(--ease-in-out); }
+
+    main { min-width: 0; }
+    .o-sec { padding: clamp(56px, 9vw, 120px) clamp(20px, 5vw, 72px); border-bottom: 1px solid var(--ink); }
+    .o-label { font-size: 12px; font-weight: 800; letter-spacing: 0.2em; text-transform: uppercase; color: var(--sand); margin-bottom: 24px; }
+    h1 { font-weight: 800; font-size: clamp(56px, 13vw, 200px); line-height: 0.88; letter-spacing: -0.06em; }
+    .o-up { display: block; animation: o-up 900ms var(--ease-out) both; animation-delay: calc(150ms + var(--d) * 120ms); }
+    @keyframes o-up { from { opacity: 0; transform: translateY(40px); } }
+    h2 { font-weight: 800; font-size: clamp(40px, 7vw, 96px); line-height: 0.95; letter-spacing: -0.05em; margin-bottom: 40px; }
+
+    .o-rule { display: block; height: 2px; background: var(--ink); margin: 40px 0; transform-origin: left; transform: scaleX(0.001); transition: transform 1100ms var(--ease-in-out); }
+    .o-rule.is-in { transform: none; }
+    .o-meta { display: grid; gap: 24px; }
+    @media (min-width: 640px) { .o-meta { grid-template-columns: repeat(3, 1fr); } }
+    .o-meta dt { font-size: 12px; font-weight: 800; letter-spacing: 0.16em; text-transform: uppercase; color: var(--muted); }
+    .o-meta dd { font-size: 18px; font-weight: 600; margin-top: 6px; }
+    .o-meta a { display: inline-block; padding: 10px 0; margin: -10px 0; }
+
+    /* Register */
+    .o-register { border-top: 2px solid var(--ink); }
+    .o-group { padding: 24px 0; border-bottom: 1px solid #d4d4d0; }
+    .o-group-head { display: grid; grid-template-columns: 48px 1fr auto; align-items: baseline; gap: 12px; }
+    .o-n { font-weight: 800; color: var(--sand); }
+    h3 { font-size: clamp(22px, 3vw, 32px); font-weight: 800; letter-spacing: -0.03em; min-width: 0; overflow-wrap: break-word; hyphens: auto; }
+    .o-cat { font-size: 12px; font-weight: 800; letter-spacing: 0.16em; text-transform: uppercase; color: var(--muted); }
+    .o-thumb { grid-column: 1 / -1; width: 100%; height: 140px; object-fit: cover; margin-top: 12px; filter: grayscale(1); }
+    .o-group ul { list-style: none; padding: 12px 0 0 60px; display: flex; flex-wrap: wrap; gap: 4px 20px; color: var(--muted); }
+    @media (max-width: 520px) { .o-group ul { padding-left: 0; } .o-group-head { grid-template-columns: 40px 1fr; } .o-cat { grid-column: 2; } }
+    @media (hover: hover) and (pointer: fine) {
+      .o-thumb { display: none; }
+      .o-group { transition: background-color 200ms ease; }
+      .o-group:hover { background: #f0efe9; }
+    }
+    .o-note { margin-top: 24px; color: var(--muted); }
+
+    .o-float { position: fixed; left: 0; top: 0; z-index: 20; width: 280px; aspect-ratio: 4 / 5; pointer-events: none; opacity: 0; transform: translate(-999px, 0); transition: opacity 200ms ease; }
+    .o-float.is-on { opacity: 1; }
+    .o-float img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; opacity: 0; transition: opacity 200ms ease; }
+    .o-float img.is-on { opacity: 1; }
+
+    /* Fotos werden beim Hereinscrollen farbig */
+    .o-photo { margin-bottom: 32px; }
+    .o-photo img { width: 100%; max-height: 70vh; object-fit: cover; filter: grayscale(1); transition: filter 1400ms ease; }
+    .o-photo.is-in img, .no-js .o-photo img { filter: none; }
+    .o-photo figcaption { font-size: 14px; color: var(--muted); margin-top: 10px; }
+    .o-about-grid { display: grid; gap: 32px; align-items: center; }
+    @media (min-width: 900px) { .o-about-grid { grid-template-columns: 1fr 1.6fr; } }
+    .o-big { font-size: clamp(24px, 3vw, 40px); font-weight: 600; line-height: 1.25; letter-spacing: -0.03em; }
+    .o-big mark { background: none; box-shadow: inset 0 -0.4em 0 #ead9c2; color: inherit; }
+
+    .o-phone { display: block; font-weight: 800; font-size: clamp(48px, 10vw, 140px); letter-spacing: -0.05em; line-height: 1; text-decoration: none; font-variant-numeric: tabular-nums; }
+    .o-contact-row { display: flex; flex-wrap: wrap; gap: 8px 32px; font-weight: 600; }
+    .o-contact-row a { display: inline-block; padding: 12px 0; }
+
+    @media (prefers-reduced-motion: reduce) {
+      html { scroll-behavior: auto; }
+      .o-up { animation: o-fade 400ms ease both; }
+      .o-rule { transform: none; transition: none; }
+      .o-marker { transition: none; }
+      .o-photo img { transition: filter 400ms ease; }
+    }
+    @keyframes o-fade { from { opacity: 0; } }
+  </style>
+</Draft>
