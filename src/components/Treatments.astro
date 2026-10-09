@@ -46,7 +46,7 @@ const pad = (n: number) => String(n + 1).padStart(2, '0');
       <section class="panel" role="tabpanel" id={`panel-${i}`} aria-labelledby={`tab-${i}`} data-panel={i}>
         <div class="panel-intro">
           <figure class="photo">
-            <Image src={photos[c.icon]} alt="" widths={[480, 800]} sizes="(min-width: 900px) 360px, 90vw" loading="lazy" />
+            <Image src={photos[c.icon]} alt="" widths={[480, 800]} sizes="(min-width: 900px) 360px, 90vw" loading="eager" />
           </figure>
           <p class="panel-accent" aria-hidden="true">{c.accent}</p>
           <h3>{c.title}</h3>
