@@ -23,6 +23,9 @@
   --gutter: clamp(16px, 5vw, 48px);
   --max: 1120px;
   --header-h: 60px;
+  --surface: #fff; /* Karten, Reiter */
+  --on-accent: #fff; /* Schrift auf Petrol */
+  --script: 'Allura', cursive; /* Schmuckschrift */
 }
 
 @media (min-width: 760px) {
@@ -120,7 +123,7 @@ p {
 
 .btn-primary {
   background: var(--sage-dark);
-  color: #fff;
+  color: var(--on-accent);
 }
 
 .btn-ghost {
@@ -130,7 +133,7 @@ p {
 
 @media (hover: hover) and (pointer: fine) {
   .btn-primary:hover {
-    background: #245c58;
+    background: color-mix(in srgb, var(--sage-dark) 85%, black);
   }
   .btn-ghost:hover {
     background: rgba(47, 42, 37, 0.05);

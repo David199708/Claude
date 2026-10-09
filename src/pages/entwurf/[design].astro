@@ -1,0 +1,12 @@
+---
+// Gestaltungsentwürfe: /entwurf/botanik, /entwurf/noir, /entwurf/rose, /entwurf/nordisch, /entwurf/deco
+import Home from '../../components/Home.astro';
+import '../../styles/themes.css';
+
+export function getStaticPaths() {
+  return ['botanik', 'noir', 'rose', 'nordisch', 'deco'].map((design) => ({ params: { design } }));
+}
+const { design } = Astro.params;
+---
+
+<Home design={design} />

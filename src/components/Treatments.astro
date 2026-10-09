@@ -86,7 +86,9 @@ const pad = (n: number) => String(n + 1).padStart(2, '0');
       const h = tablist.clientHeight;
       const top = t.offsetTop;
       const left = t.offsetLeft;
-      copy.style.clipPath = `inset(${top}px ${w - left - t.offsetWidth}px ${h - top - t.offsetHeight}px ${left}px round 999px)`;
+      // Rundung kommt aus dem Design (--tab-radius), Standard ist die Pille
+      const r = getComputedStyle(tablist).getPropertyValue('--tab-radius').trim() || '999px';
+      copy.style.clipPath = `inset(${top}px ${w - left - t.offsetWidth}px ${h - top - t.offsetHeight}px ${left}px round ${r})`;
     };
 
     // Tastatur-Wechsel ohne Animation – wer mit Pfeiltasten springt, soll nicht warten.
@@ -129,7 +131,7 @@ const pad = (n: number) => String(n + 1).padStart(2, '0');
     grid-template-columns: repeat(2, 1fr);
     gap: 6px;
     padding: 6px;
-    background: #fff;
+    background: var(--surface);
     border: 1px solid var(--line);
     border-radius: 28px;
     margin-bottom: 20px;
@@ -168,7 +170,7 @@ const pad = (n: number) => String(n + 1).padStart(2, '0');
   }
 
   .tab-accent {
-    font-family: 'Allura', cursive;
+    font-family: var(--script);
     font-size: 30px;
     line-height: 1;
     color: var(--sage-dark);
@@ -214,11 +216,11 @@ const pad = (n: number) => String(n + 1).padStart(2, '0');
   }
 
   .tabs-active .tab-accent {
-    color: #fff;
+    color: var(--on-accent);
   }
 
   .tabs-active .tab-title {
-    color: rgba(255, 255, 255, 0.78);
+    color: color-mix(in srgb, var(--on-accent) 78%, transparent);
   }
 
   @media (hover: hover) and (pointer: fine) {
@@ -230,13 +232,14 @@ const pad = (n: number) => String(n + 1).padStart(2, '0');
   /* Inhalt */
   .panels {
     display: grid;
+    grid-template-columns: minmax(0, 1fr); /* lange Behandlungsnamen sprengen nie die Breite */
     gap: 20px;
   }
 
   .panel {
     display: grid;
     gap: 28px;
-    background: #fff;
+    background: var(--surface);
     border: 1px solid var(--line);
     border-radius: calc(var(--radius) + 6px);
     padding: clamp(24px, 4vw, 48px);
@@ -288,7 +291,7 @@ const pad = (n: number) => String(n + 1).padStart(2, '0');
   }
 
   .panel-accent {
-    font-family: 'Allura', cursive;
+    font-family: var(--script);
     font-size: clamp(48px, 7vw, 72px);
     line-height: 0.9;
     color: var(--sage);
@@ -380,6 +383,9 @@ const pad = (n: number) => String(n + 1).padStart(2, '0');
   .name {
     font-size: 16px;
     flex: 1;
+    min-width: 0;
+    overflow-wrap: break-word;
+    hyphens: auto;
   }
 
   .price {

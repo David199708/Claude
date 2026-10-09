@@ -43,10 +43,10 @@ const hasLogo = fs.existsSync(path.join(process.cwd(), 'public/logo.png'));
     position: sticky;
     top: 0;
     z-index: 10;
-    background: rgba(251, 248, 243, 0.85);
+    background: color-mix(in srgb, var(--paper) 85%, transparent);
     backdrop-filter: saturate(1.4) blur(12px);
     -webkit-backdrop-filter: saturate(1.4) blur(12px);
-    border-bottom: 1px solid rgba(226, 215, 198, 0.7);
+    border-bottom: 1px solid color-mix(in srgb, var(--line) 70%, transparent);
     padding-top: env(safe-area-inset-top);
   }
 
